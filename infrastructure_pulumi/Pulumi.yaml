@@ -1,0 +1,6 @@
+name: KubernetesCluster_TAF
+description: A Python program to create a Kubernetes cluster on AWS
+runtime:
+    name: python
+    options:
+        virtualenv: venv

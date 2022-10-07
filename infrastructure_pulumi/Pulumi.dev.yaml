@@ -1,0 +1,7 @@
+config:
+  KubernetesCluster_TAF:desiredClusterSize: "2"
+  KubernetesCluster_TAF:eksNodeInstanceType: t2.medium
+  KubernetesCluster_TAF:maxClusterSize: "3"
+  KubernetesCluster_TAF:minClusterSize: "1"
+  KubernetesCluster_TAF:vpcNetworkCidr: 10.0.0.0/16
+  aws:region: ca-central-1
