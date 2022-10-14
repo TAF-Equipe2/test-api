@@ -1,16 +1,15 @@
 import * as gcp from '@pulumi/gcp';
 import * as pulumi from '@pulumi/pulumi';
+import { cloudRunService, iamService } from './apis';
 
 const cfg = new pulumi.Config();
 
 export const deployWikiJS = (dbInstance: gcp.sql.DatabaseInstance, db: gcp.sql.Database, dbUser: gcp.sql.User) => {
-    const cloudRunService = new gcp.projects.Service('cloudrun', {
-        service: 'run.googleapis.com'
-    });
+
 
     const serviceAccount = new gcp.serviceaccount.Account('wikijs-service-user', {
         accountId: 'wikijs-service-user'
-    });
+    }, {dependsOn: [iamService]});
 
     const appService = new gcp.cloudrun.Service('wikijs', {
         location: 'europe-west1',
