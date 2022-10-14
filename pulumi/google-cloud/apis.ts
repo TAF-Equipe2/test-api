@@ -13,3 +13,7 @@ export const iamService = new gcp.projects.Service('iam', {
 export const cloudResourceManagerService = new gcp.projects.Service('cloudresourcemanager', {
     service: 'cloudresourcemanager.googleapis.com'
 });
+
+export const sqlAdminService = new gcp.projects.Service('sqladmin', {
+    service: 'sqladmin.googleapis.com'
+});
