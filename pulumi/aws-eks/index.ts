@@ -16,6 +16,13 @@ const eksVpc = new awsx.ec2.Vpc("eks-vpc", {
     cidrBlock: vpcNetworkCidr,
 });
 
+// Build and publish to an ECR registry.
+const repo_front = new awsx.ecr.Repository("taf-front");
+const image_front = repo_front.buildAndPushImage("./frontend");
+const repo_back = new awsx.ecr.Repository("taf-back");
+const image_back = repo_back.buildAndPushImage("./backend");
+
+
 // Create the EKS cluster
 const eksCluster = new eks.Cluster("eks-cluster", {
     // Put the cluster in the new VPC created earlier
