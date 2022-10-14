@@ -6,7 +6,6 @@ const cfg = new pulumi.Config();
 
 export const deployWikiJS = (dbInstance: gcp.sql.DatabaseInstance, db: gcp.sql.Database, dbUser: gcp.sql.User) => {
 
-
     const serviceAccount = new gcp.serviceaccount.Account('wikijs-service-user', {
         accountId: 'wikijs-service-user'
     }, {dependsOn: [iamService]});
