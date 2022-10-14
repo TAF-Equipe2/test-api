@@ -4,7 +4,7 @@ run-name: Build and deploy
 on:
   push:
     branches:
-      - "main"
+      - "develop"
 
 jobs:
   build-backend:
