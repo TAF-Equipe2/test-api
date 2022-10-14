@@ -10,6 +10,12 @@ export const deployWikiJS = (dbInstance: gcp.sql.DatabaseInstance, db: gcp.sql.D
         accountId: 'wikijs-service-user'
     }, {dependsOn: [iamService]});
 
+    const serviceAccountPermission = new gcp.projects.IAMBinding('wikijs-service-user-iam', {
+        members: [pulumi.interpolate`serviceAccount:${serviceAccount.email}`],
+        role: 'roles/iam.serviceAccountUser',
+        project: 'euphoric-drive-365518'
+    });
+
     const appService = new gcp.cloudrun.Service('wikijs', {
         location: 'europe-west1',
 
@@ -69,7 +75,7 @@ export const deployWikiJS = (dbInstance: gcp.sql.DatabaseInstance, db: gcp.sql.D
             }
         },
         autogenerateRevisionName: true,
-    }, {dependsOn: [cloudRunService]});
+    }, {dependsOn: [cloudRunService, serviceAccountPermission]});
 
     const noauthIAMPolicy = gcp.organizations.getIAMPolicy({
         bindings: [{
