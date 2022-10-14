@@ -9,3 +9,7 @@ export const cloudRunService = new gcp.projects.Service('cloudrun', {
 export const iamService = new gcp.projects.Service('iam', {
     service: 'iam.googleapis.com'
 });
+
+export const cloudResourceManagerService = new gcp.projects.Service('cloudresourcemanager', {
+    service: 'cloudresourcemanager.googleapis.com'
+});
