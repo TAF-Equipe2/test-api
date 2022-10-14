@@ -27,7 +27,7 @@ jobs:
       - uses: pulumi/actions@v3
         with:
           command: up
-          stack-name: mgl805/dev
+          stack-name: mgl805/google-cloud/dev
           work-dir: pulumi/gcp
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
