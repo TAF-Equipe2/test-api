@@ -11,3 +11,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo 'Hello'
+  deploy-wikijs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+      - run: yarn --cwd pulumi/gcp install
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v0'
+        with:
+          credentials_json: '${{ secrets.GCP_GITHUB_SA_KEY }}'
+      - uses: pulumi/actions@v3
+        with:
+          command: up
+          stack-name: mgl805/dev
+          work-dir: pulumi/gcp
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
