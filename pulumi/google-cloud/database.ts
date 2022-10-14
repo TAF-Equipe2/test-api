@@ -1,5 +1,6 @@
 import * as gcp from '@pulumi/gcp';
 import * as pulumi from '@pulumi/pulumi';
+import { sqlAdminService } from './apis';
 
 const cfg = new pulumi.Config();
 
@@ -16,7 +17,7 @@ export const dbInstance = new gcp.sql.DatabaseInstance("wikijs-db-instance", {
     },
 
     deletionProtection: false
-});
+}, { dependsOn: [sqlAdminService]});
 
 export const database = new gcp.sql.Database('wikijs', {
     instance: dbInstance.name,
