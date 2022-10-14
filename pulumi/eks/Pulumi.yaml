@@ -1,3 +1,0 @@
-name: eks_ts
-description: A TypeScript program to create a Kubernetes cluster on AWS
-runtime: nodejs

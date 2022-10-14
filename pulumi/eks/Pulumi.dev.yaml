@@ -1,7 +1,0 @@
-config:
-  aws:region: ca-central-1
-  eks_ts:desiredClusterSize: "2"
-  eks_ts:eksNodeInstanceType: t2.medium
-  eks_ts:maxClusterSize: "3"
-  eks_ts:minClusterSize: "1"
-  eks_ts:vpcNetworkCidr: 10.0.0.0/16
