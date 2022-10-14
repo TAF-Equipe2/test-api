@@ -1,0 +1,4 @@
+config:
+  gcp:db-user-password:
+    secure: AAABAHrCsTzDy6dpPRNTrTRKMS9XNoedKZMLq4upNtuo
+  gcp:project: euphoric-drive-365518

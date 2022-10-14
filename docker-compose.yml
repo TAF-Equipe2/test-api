@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+  backend:
+    image: back
+    container_name: back
+    build:
+      context: ./backend
+    ports:
+      - "9000:80"
+  frontend:
+    image: front
+    container_name: front
+    build:
+      context: ./frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
