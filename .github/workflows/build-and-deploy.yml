@@ -10,4 +10,4 @@ jobs:
   build-backend:
     runs-on: ubuntu-latest
     steps:
-      - echo 'Hello'
+      - run: echo 'Hello'
