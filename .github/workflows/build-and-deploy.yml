@@ -19,6 +19,7 @@ jobs:
         with:
           node-version: 16.x
           cache: yarn
+          cache-dependency-path: pulumi/google-cloud/yarn.lock
       - run: yarn --cwd pulumi/google-cloud install
       - id: 'auth'
         name: 'Authenticate to Google Cloud'
