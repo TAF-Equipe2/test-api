@@ -17,3 +17,7 @@ export const cloudResourceManagerService = new gcp.projects.Service('cloudresour
 export const sqlAdminService = new gcp.projects.Service('sqladmin', {
     service: 'sqladmin.googleapis.com'
 });
+
+export const artifactRegistryService = new gcp.projects.Service('artifactregistry', {
+    service: 'artifactregistry.googleapis.com'
+});

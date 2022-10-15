@@ -77,7 +77,7 @@ export const deployWikiJS = (dbInstance: gcp.sql.DatabaseInstance, db: gcp.sql.D
             }
         },
         autogenerateRevisionName: true,
-    }, {dependsOn: [cloudRunService, serviceAccountPermission]});
+    }, {dependsOn: [cloudRunService, serviceAccountPermission, dockerRegistry]});
 
     const noauthIAMPolicy = gcp.organizations.getIAMPolicy({
         bindings: [{
