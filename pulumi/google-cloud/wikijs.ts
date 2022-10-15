@@ -41,7 +41,7 @@ export const deployWikiJS = (dbInstance: gcp.sql.DatabaseInstance, db: gcp.sql.D
                         },
                         {
                             name: 'DATABASE_URL',
-                            value: `mysql://${dbUser.name}:${cfg.requireSecret('db-user-password')}@localhost:3306?socketPath=/cloudsql/${dbInstance.connectionName}`
+                            value: pulumi.interpolate`mysql://${dbUser.name}:${cfg.requireSecret('db-user-password')}@localhost:3306?socketPath=/cloudsql/${dbInstance.connectionName}`
                         },
                         {
                             name: 'DB_HOST',
