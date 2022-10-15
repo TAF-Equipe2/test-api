@@ -16,6 +16,14 @@ export const deployWikiJS = (dbInstance: gcp.sql.DatabaseInstance, db: gcp.sql.D
         role: 'roles/iam.serviceAccountUser',
         project: 'euphoric-drive-365518'
     });
+
+    const accessToCloudSQL = new gcp.projects.IAMBinding('wikijs-service-sql-access', {
+        project: 'euphoric-drive-365518',
+        role: 'roles/cloudsql.client',
+        members: [
+            pulumi.interpolate`serviceAccount:${serviceAccount.email}`
+        ]
+    });
     
 
     const appService = new gcp.cloudrun.Service('wikijs', {
@@ -41,7 +49,7 @@ export const deployWikiJS = (dbInstance: gcp.sql.DatabaseInstance, db: gcp.sql.D
                         },
                         {
                             name: 'DATABASE_URL',
-                            value: pulumi.interpolate`mysql://${dbUser.name}:${cfg.requireSecret('db-user-password')}@localhost:3306?socketPath=/cloudsql/${dbInstance.connectionName}`
+                            value: pulumi.interpolate`mysql://${dbUser.name}:${cfg.requireSecret('db-user-password')}@localhost:3306/?socketPath=/cloudsql/${dbInstance.connectionName}`
                         },
                         {
                             name: 'DB_HOST',
@@ -77,7 +85,7 @@ export const deployWikiJS = (dbInstance: gcp.sql.DatabaseInstance, db: gcp.sql.D
             }
         },
         autogenerateRevisionName: true,
-    }, {dependsOn: [cloudRunService, serviceAccountPermission, dockerRegistry]});
+    }, {dependsOn: [cloudRunService, serviceAccountPermission, dockerRegistry, accessToCloudSQL]});
 
     const noauthIAMPolicy = gcp.organizations.getIAMPolicy({
         bindings: [{
