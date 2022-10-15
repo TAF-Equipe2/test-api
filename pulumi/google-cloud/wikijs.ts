@@ -1,6 +1,7 @@
 import * as gcp from '@pulumi/gcp';
 import * as pulumi from '@pulumi/pulumi';
 import { cloudRunService, iamService } from './apis';
+import { dockerRegistry } from './registry';
 
 const cfg = new pulumi.Config();
 
@@ -15,6 +16,7 @@ export const deployWikiJS = (dbInstance: gcp.sql.DatabaseInstance, db: gcp.sql.D
         role: 'roles/iam.serviceAccountUser',
         project: 'euphoric-drive-365518'
     });
+    
 
     const appService = new gcp.cloudrun.Service('wikijs', {
         location: 'europe-west1',
