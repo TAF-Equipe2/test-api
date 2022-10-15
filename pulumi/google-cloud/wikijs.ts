@@ -39,6 +39,7 @@ export const deployWikiJS = (dbInstance: gcp.sql.DatabaseInstance, db: gcp.sql.D
                 annotations: {
                     'autoscaling.knative.dev/maxScale': '1',
                     'autoscaling.knative.dev/minScale': '1',
+                    "run.googleapis.com/cloudsql-instances": dbInstance.connectionName,
                 }
             },
             spec: {
@@ -84,11 +85,6 @@ export const deployWikiJS = (dbInstance: gcp.sql.DatabaseInstance, db: gcp.sql.D
                     ]
                 }]
             },
-            metadata: {
-                annotations: {
-                    "run.googleapis.com/cloudsql-instances": dbInstance.connectionName,
-                }
-            }
         },
         autogenerateRevisionName: true,
     }, {dependsOn: [cloudRunService, serviceAccountPermission, dockerRegistry, accessToCloudSQL]});
