@@ -18,10 +18,15 @@ const eksVpc = new awsx.ec2.Vpc("eks-vpc", {
 
 // Build and publish to an ECR registry.
 const repo_front = new awsx.ecr.Repository("taf-front");
-const image_front = repo_front.buildAndPushImage("./frontend");
+const image_front = new awsx.ecr.Image("image_front", {
+    repositoryUrl: repo_front.url,
+    path: "../../frontend",
+})
 const repo_back = new awsx.ecr.Repository("taf-back");
-const image_back = repo_back.buildAndPushImage("./backend");
-
+const image_back = new awsx.ecr.Image("image_back", {
+    repositoryUrl: repo_back.url,
+    path: "../../backtend",
+})
 
 // Create the EKS cluster
 const eksCluster = new eks.Cluster("eks-cluster", {
