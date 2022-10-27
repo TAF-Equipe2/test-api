@@ -25,7 +25,7 @@ const image_front = new awsx.ecr.Image("image_front", {
 const repo_back = new awsx.ecr.Repository("taf-back");
 const image_back = new awsx.ecr.Image("image_back", {
     repositoryUrl: repo_back.url,
-    path: "../../backtend",
+    path: "../../backend",
 })
 
 // Create the EKS cluster
