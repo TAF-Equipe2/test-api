@@ -14,19 +14,24 @@ const vpcNetworkCidr = config.get("vpcNetworkCidr") || "10.0.0.0/16";
 const eksVpc = new awsx.ec2.Vpc("eks-vpc", {
     enableDnsHostnames: true,
     cidrBlock: vpcNetworkCidr,
+    numberOfNatGateways:1
 });
+
+// Using default-vpc to cut on cost
+// new awsx.ec2.DefaultVpc("default-vpc");
+
 
 // Build and publish to an ECR registry.
 const repo_front = new awsx.ecr.Repository("taf-front");
-const image_front = repo_front.buildAndPushImage("./frontend");
+const image_front = repo_front.buildAndPushImage("../../frontend");
 const repo_back = new awsx.ecr.Repository("taf-back");
-const image_back = repo_back.buildAndPushImage("./backend");
+const image_back = repo_back.buildAndPushImage("../../backend");
 
 
 // Create the EKS cluster
 const eksCluster = new eks.Cluster("eks-cluster", {
     // Put the cluster in the new VPC created earlier
-    vpcId: eksVpc.vpcId,
+    vpcId: eksVpc.id,
     // Public subnets will be used for load balancers
     publicSubnetIds: eksVpc.publicSubnetIds,
     // Private subnets will be used for cluster nodes
@@ -37,15 +42,15 @@ const eksCluster = new eks.Cluster("eks-cluster", {
     minSize: minClusterSize,
     maxSize: maxClusterSize,
     // Do not give the worker nodes public IP addresses
-    nodeAssociatePublicIpAddress: false,
+    nodeAssociatePublicIpAddress: true,
     // Uncomment the next two lines for a private cluster (VPN access required)
-    endpointPrivateAccess: true,
-    endpointPublicAccess: true
+    // endpointPrivateAccess: true,
+    // endpointPublicAccess: true
 });
 
 // Export some values for use elsewhere
 export const kubeconfig = eksCluster.kubeconfig;
-export const vpcId = eksVpc.vpcId;
+export const vpcId = eksVpc.id;
 
 //const ns = new k8s.core.v1.Namespace("wikijs", {}, {provider: eksCluster.provider})
 /*
