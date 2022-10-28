@@ -5,7 +5,7 @@ import { sqlAdminService } from './apis';
 const cfg = new pulumi.Config();
 
 export const dbInstance = new gcp.sql.DatabaseInstance("wikijs-db-instance", {
-    databaseVersion: 'MYSQL_5_7',
+    databaseVersion: 'MYSQL_8_0',
     region: 'europe-west1',
 
     settings: {
