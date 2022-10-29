@@ -1,6 +1,7 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as awsx from "@pulumi/awsx";
 import * as eks from "@pulumi/eks";
+import * as aws from "@pulumi/aws";
 
 // Grab some values from the Pulumi configuration (or use default values)
 const config = new pulumi.Config();
@@ -14,19 +15,32 @@ const vpcNetworkCidr = config.get("vpcNetworkCidr") || "10.0.0.0/16";
 const eksVpc = new awsx.ec2.Vpc("eks-vpc", {
     enableDnsHostnames: true,
     cidrBlock: vpcNetworkCidr,
-    numberOfNatGateways:1
+    numberOfNatGateways: 1
 });
 
 // Using default-vpc to cut on cost
 // new awsx.ec2.DefaultVpc("default-vpc");
 
+const iamUserGroup = pulumi.output(aws.iam.getGroup({
+    groupName: "CloudDeveloper",
+}));
+
+let aws_auth_configMap: eks.UserMapping[] = []
+iamUserGroup.users.apply((users) => {
+    users.forEach((user) => {
+        aws_auth_configMap.push({
+            userArn: user.arn,
+            groups: ["system:masters"],
+            username: "pulumi:admins",
+        })
+    })
+})
 
 // Build and publish to an ECR registry.
 const repo_front = new awsx.ecr.Repository("taf-front");
 const image_front = repo_front.buildAndPushImage("../../frontend");
 const repo_back = new awsx.ecr.Repository("taf-back");
 const image_back = repo_back.buildAndPushImage("../../backend");
-
 
 // Create the EKS cluster
 const eksCluster = new eks.Cluster("eks-cluster", {
@@ -46,6 +60,7 @@ const eksCluster = new eks.Cluster("eks-cluster", {
     // Uncomment the next two lines for a private cluster (VPN access required)
     // endpointPrivateAccess: true,
     // endpointPublicAccess: true
+    userMappings: aws_auth_configMap
 });
 
 // Export some values for use elsewhere
