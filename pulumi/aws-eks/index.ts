@@ -22,20 +22,18 @@ const eksVpc = new awsx.ec2.Vpc("eks-vpc", {
 // Using default-vpc to cut on cost
 // new awsx.ec2.DefaultVpc("default-vpc");
 
-const iamUserGroup = pulumi.output(aws.iam.getGroup({
-    groupName: "CloudDeveloper",
-}));
 
-let aws_auth_configMap: eks.UserMapping[] = []
-iamUserGroup.users.apply((users) => {
-    users.forEach((user) => {
-        aws_auth_configMap.push({
+export const aws_auth_configMap = pulumi.output(aws.iam.getGroup({
+    groupName: "CloudDeveloper",
+})).apply((iamUserGroup)=>{
+    return iamUserGroup.users.map((user)=>{
+        return {
             userArn: user.arn,
             groups: ["system:masters"],
             username: "pulumi:admins",
-        })
+        };
     })
-})
+});
 
 // Create the EKS cluster
 const eksCluster = new eks.Cluster("eks-cluster", {
@@ -96,10 +94,12 @@ export const TAFNamespaceName = ns.metadata.name;
 const secret_db_config = new k8s.core.v1.Secret("db-taf-secret", {
     stringData: {
         "username": `${DB_Username}`,
-        "password": `${DB_Password}`,
+        "password": pulumi.interpolate`${DB_Password}`,
     }
 }, {provider: eksCluster.provider})
 
+
+/*
 const appBackendName = "taf-backend";
 const appLabels = {appClass: appBackendName};
 const deployment_back = new k8s.apps.v1.Deployment(`${appBackendName}-deployment`, {
@@ -191,3 +191,4 @@ const service_frontend = new k8s.core.v1.Service(`${appFrontendName}-svc`, {
 
 // Export the URL for the load balanced service.
 export const front_url = service_frontend.status.loadBalancer.ingress[0].hostname;
+ */
