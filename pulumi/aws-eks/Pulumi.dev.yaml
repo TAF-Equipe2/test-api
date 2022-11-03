@@ -1,4 +1,7 @@
 config:
+  aws-eks:TAF_DB_Password:
+    secure: AAABAIlNPwbkVqH34ZkJ1gD2OvMeaRzSyRre44klGCbszxaB9DAL3P5bqMvNaOQ=
+  aws-eks:TAF_DB_Username: nostr321_taf
   aws:region: ca-central-1
   eks_ts:desiredClusterSize: "1"
   eks_ts:eksNodeInstanceType: t2.micro

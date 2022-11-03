@@ -1,6 +1,8 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as awsx from "@pulumi/awsx";
 import * as eks from "@pulumi/eks";
+import * as aws from "@pulumi/aws";
+import * as k8s from "@pulumi/kubernetes"
 
 // Grab some values from the Pulumi configuration (or use default values)
 const config = new pulumi.Config();
@@ -14,19 +16,24 @@ const vpcNetworkCidr = config.get("vpcNetworkCidr") || "10.0.0.0/16";
 const eksVpc = new awsx.ec2.Vpc("eks-vpc", {
     enableDnsHostnames: true,
     cidrBlock: vpcNetworkCidr,
-    numberOfNatGateways:1
+    numberOfNatGateways: 1
 });
 
 // Using default-vpc to cut on cost
 // new awsx.ec2.DefaultVpc("default-vpc");
 
 
-// Build and publish to an ECR registry.
-const repo_front = new awsx.ecr.Repository("taf-front");
-const image_front = repo_front.buildAndPushImage("../../frontend");
-const repo_back = new awsx.ecr.Repository("taf-back");
-const image_back = repo_back.buildAndPushImage("../../backend");
-
+export const aws_auth_configMap = pulumi.output(aws.iam.getGroup({
+    groupName: "CloudDeveloper",
+})).apply((iamUserGroup)=>{
+    return iamUserGroup.users.map((user)=>{
+        return {
+            userArn: user.arn,
+            groups: ["system:masters"],
+            username: "pulumi:admins",
+        };
+    })
+});
 
 // Create the EKS cluster
 const eksCluster = new eks.Cluster("eks-cluster", {
@@ -46,32 +53,142 @@ const eksCluster = new eks.Cluster("eks-cluster", {
     // Uncomment the next two lines for a private cluster (VPN access required)
     // endpointPrivateAccess: true,
     // endpointPublicAccess: true
+    userMappings: aws_auth_configMap
 });
 
 // Export some values for use elsewhere
 export const kubeconfig = eksCluster.kubeconfig;
 export const vpcId = eksVpc.id;
 
-//const ns = new k8s.core.v1.Namespace("wikijs", {}, {provider: eksCluster.provider})
-/*
 
-const wikijs_chart = new k8s.helm.v3.Chart("wikiJS", {
-    chart: "requarks/wiki",
-    namespace : "wikiJS",
-    repo:"latest",
-    fetchOpts: {
-        repo: "https://charts.js.wiki/latest",
-    },
+// Build and publish to an ECR registry.
+const repo_front = new awsx.ecr.Repository("taf-front");
+const image_front = repo_front.buildAndPushImage("../../frontend");
+const repo_back = new awsx.ecr.Repository("taf-back");
+const image_back = repo_back.buildAndPushImage("../../backend");
+
+// Starting a new DB instance for the TAF Backend
+const DB_Username = config.require("TAF_DB_Username");
+export const DB_Password = config.requireSecret("TAF_DB_Password");
+
+const DB_TAF_Backend = new aws.rds.Instance("db-taf-backend", {
+    allocatedStorage: 10,
+    dbName: "DB_TAF_Backend",
+    engine: "mysql",
+    engineVersion: "5.7",
+    instanceClass: "db.t3.micro",
+    parameterGroupName: "default.mysql5.7",
+    username: `${DB_Username}`,
+    password: pulumi.interpolate`${DB_Password}`,
+    skipFinalSnapshot: true,
 });
-*/
+
+export const DB_Address = DB_TAF_Backend.address
+
+// Namespace to isolate resources used for TAF
+const ns = new k8s.core.v1.Namespace("taf", {}, {provider: eksCluster.provider})
+export const TAFNamespaceName = ns.metadata.name;
+
+// Deploying TAF Backend
+
+const secret_db_config = new k8s.core.v1.Secret("db-taf-secret", {
+    stringData: {
+        "username": `${DB_Username}`,
+        "password": pulumi.interpolate`${DB_Password}`,
+    }
+}, {provider: eksCluster.provider})
+
 
 /*
-const wikijs_release = new k8s.helm.v3.Release("wiki",
-    {
-        chart: "wiki",
-        repositoryOpts: {
-            repo: "https://charts.js.wiki"
+const appBackendName = "taf-backend";
+const appLabels = {appClass: appBackendName};
+const deployment_back = new k8s.apps.v1.Deployment(`${appBackendName}-deployment`, {
+    metadata: {labels: appLabels},
+    spec: {
+        replicas: 1,
+        selector: {matchLabels: appLabels},
+        template: {
+            metadata: {
+                labels: appLabels,
+                namespace: TAFNamespaceName
+            },
+            spec: {
+                containers: [{
+                    name: appBackendName,
+                    image: image_back,
+                    ports: [{name: "http", containerPort: 80}],
+                    env: [
+                        {
+                            name: "SPRING_DATASOURCE_URL",
+                            value: DB_Address //address:port
+                        },
+                        {
+                            name: "SPRING_DATASOURCE_USERNAME",
+                            valueFrom: {
+                                secretKeyRef: {name: secret_db_config.metadata.name, key: "username"}
+                            }
+                        },
+                        {
+                            name: "SPRING_DATASOURCE_PASSWORD",
+                            valueFrom: {
+                                secretKeyRef: {
+                                    name: secret_db_config.metadata.name,
+                                    key: "password"
+                                }
+                            }
+                        }]
+                }],
+            }
         }
-    }, {provider: eksCluster.provider}
-)
-*/
+    },
+}, {provider: eksCluster.provider});
+
+const service_backend = new k8s.core.v1.Service(`${appBackendName}-svc`, {
+    metadata: {
+        labels: appLabels,
+        namespace: TAFNamespaceName
+    },
+    spec: {
+        type: "LoadBalancer",
+        ports: [{port: 9000, targetPort: "http"}],
+        selector: appLabels,
+    },
+}, {provider: eksCluster.provider});
+
+// Export the URL for the load balanced service.
+export const back_url = service_backend.status.loadBalancer.ingress[0].hostname;
+
+// Deploying frontend
+const appFrontendName = "taf-frontend"
+const appFrontLabels = {appClass: appFrontendName};
+const deployment_front = new k8s.apps.v1.Deployment(`${appFrontendName}-deployment`, {
+    metadata: {labels: appFrontLabels, namespace: TAFNamespaceName},
+    spec: {
+
+        replicas: 1,
+        selector: {matchLabels: appFrontLabels},
+        template: {
+            metadata: {labels: appFrontLabels},
+            spec: {
+                containers: [{
+                    name: appFrontendName,
+                    image: image_back,
+                    ports: [{name: "http", containerPort: 80}]
+                }],
+            }
+        }
+    },
+}, {provider: eksCluster.provider});
+
+const service_frontend = new k8s.core.v1.Service(`${appFrontendName}-svc`, {
+    metadata: {labels: appFrontLabels, namespace: TAFNamespaceName},
+    spec: {
+        type: "LoadBalancer",
+        ports: [{port: 4200, targetPort: "http"}],
+        selector: appFrontLabels,
+    },
+}, {provider: eksCluster.provider});
+
+// Export the URL for the load balanced service.
+export const front_url = service_frontend.status.loadBalancer.ingress[0].hostname;
+ */
