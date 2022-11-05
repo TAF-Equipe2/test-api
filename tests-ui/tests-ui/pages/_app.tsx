@@ -7,13 +7,14 @@ import {
   HStack,
   Link,
 } from "@chakra-ui/react";
+import { FaHome } from "react-icons/fa";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider>
       <>
-        <HStack m={4}>
-          <Button colorScheme="blue">
+        <HStack p={4} backgroundColor="blue.100">
+          <Button colorScheme="blue" leftIcon={<FaHome />}>
             <Link href="/">Accueil</Link>
           </Button>
         </HStack>

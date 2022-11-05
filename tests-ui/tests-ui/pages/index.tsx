@@ -1,6 +1,33 @@
-import { Button, Heading, HStack, Link, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Divider,
+  Grid,
+  Heading,
+  HStack,
+  Link,
+  Tag,
+  VStack,
+} from "@chakra-ui/react";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
+import Project from "../types/Project";
+import { AddIcon } from "@chakra-ui/icons";
+
+const exampleProjects: Project[] = [
+  {
+    name: "TAF",
+    owner: "John Doe",
+    start: new Date(2022, 10, 11),
+    end: new Date(2022, 10, 15),
+  },
+  {
+    name: "Projet 2",
+    owner: "Christina",
+    start: new Date(2022, 11, 11),
+    end: new Date(2022, 11, 15),
+  },
+];
 
 export default function Home() {
   return (
@@ -14,13 +41,32 @@ export default function Home() {
       <main className={styles.main}>
         <Heading>Tests UI</Heading>
 
-        <VStack mt={10}>
+        <VStack my={10}>
           <HStack>
-            <Button colorScheme="blue">
+            <Button colorScheme="blue" leftIcon={<AddIcon />}>
               <Link href="/projects/new">Nouveau projet</Link>
             </Button>
           </HStack>
         </VStack>
+
+        <Divider my={5} />
+
+        <Grid templateColumns="repeat(5, 1fr)" gap={6}>
+          {exampleProjects.map((project) => (
+            <Box backgroundColor="blue.100" p={3} borderRadius={5} border="1px solid black">
+              <VStack>
+                <p>
+                  <strong>{project.name}</strong>
+                </p>
+                <p>Responsable: {project.owner}</p>
+                <Tag size="lg" variant="solid" colorScheme="blue">
+                  {project.start.toLocaleDateString()} -{" "}
+                  {project.end.toLocaleDateString()}
+                </Tag>
+              </VStack>
+            </Box>
+          ))}
+        </Grid>
       </main>
 
       <footer className={styles.footer}>
