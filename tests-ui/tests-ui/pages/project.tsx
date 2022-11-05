@@ -9,7 +9,22 @@ const Project = () => {
                     <FormControl>
                         <FormLabel>Nom</FormLabel>
                         <Input />
-                        <FormHelperText>Le nom du projet</FormHelperText>
+                    </FormControl>
+                    <FormControl>
+                        <FormLabel>Responsable du projet</FormLabel>
+                        <Input />
+                    </FormControl>
+                    <FormControl>
+                        <FormLabel>Responsable du projet</FormLabel>
+                        <Input />
+                    </FormControl>
+                    <FormControl>
+                        <FormLabel>Date de début</FormLabel>
+                        <Input type="date"/>
+                    </FormControl>
+                    <FormControl>
+                        <FormLabel>Date de fin</FormLabel>
+                        <Input type="date"/>
                     </FormControl>
                     <Button colorScheme='blue'>Soumettre</Button>
                 </VStack>
