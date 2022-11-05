@@ -15,10 +15,6 @@ const Project = () => {
                         <Input />
                     </FormControl>
                     <FormControl>
-                        <FormLabel>Responsable du projet</FormLabel>
-                        <Input />
-                    </FormControl>
-                    <FormControl>
                         <FormLabel>Date de début</FormLabel>
                         <Input type="date"/>
                     </FormControl>
