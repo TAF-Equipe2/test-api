@@ -1,6 +1,6 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import { Button, Heading, HStack, Link, VStack } from "@chakra-ui/react";
+import Head from "next/head";
+import styles from "../styles/Home.module.css";
 
 export default function Home() {
   return (
@@ -12,11 +12,15 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Tests UI
-        </h1>
+        <Heading>Tests UI</Heading>
 
-
+        <VStack mt={10}>
+          <HStack>
+            <Button colorScheme="blue">
+              <Link href="/projects/new">Nouveau projet</Link>
+            </Button>
+          </HStack>
+        </VStack>
       </main>
 
       <footer className={styles.footer}>
@@ -29,5 +33,5 @@ export default function Home() {
         </a>
       </footer>
     </div>
-  )
+  );
 }
