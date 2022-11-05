@@ -1,4 +1,4 @@
-import {Container, FormControl, FormHelperText, FormLabel, Heading, Input, VStack} from "@chakra-ui/react";
+import {Button, Container, FormControl, FormHelperText, FormLabel, Heading, Input, VStack} from "@chakra-ui/react";
 
 const Project = () => {
     return (
@@ -11,6 +11,7 @@ const Project = () => {
                         <Input />
                         <FormHelperText>Le nom du projet</FormHelperText>
                     </FormControl>
+                    <Button colorScheme='blue'>Soumettre</Button>
                 </VStack>
             </Container>
         </VStack>
