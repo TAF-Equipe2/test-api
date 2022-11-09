@@ -1,33 +1,17 @@
 import {
-  Box,
   Button,
   Divider,
-  Grid,
+  FormControl,
+  FormHelperText,
+  FormLabel,
   Heading,
   HStack,
-  Link,
-  Tag,
+  Input,
+  Text,
   VStack,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
-import Project from "../types/Project";
-import { AddIcon } from "@chakra-ui/icons";
-
-const exampleProjects: Project[] = [
-  {
-    name: "TAF",
-    owner: "John Doe",
-    start: new Date(2022, 10, 11),
-    end: new Date(2022, 10, 15),
-  },
-  {
-    name: "Projet 2",
-    owner: "Christina",
-    start: new Date(2022, 11, 11),
-    end: new Date(2022, 11, 15),
-  },
-];
 
 export default function Home() {
   return (
@@ -42,31 +26,34 @@ export default function Home() {
         <Heading>Tests UI</Heading>
 
         <VStack my={10}>
-          <HStack>
-            <Button colorScheme="blue" leftIcon={<AddIcon />}>
-              <Link href="/projects/new">Nouveau projet</Link>
-            </Button>
-          </HStack>
+          <FormControl>
+            <FormLabel>URL</FormLabel>
+            <Input borderColor="blue.500"/>
+            <FormHelperText>Entrer l'URL du site web à tester</FormHelperText>
+          </FormControl>
+          <Divider />
+          <VStack>
+            <Heading as="h2" size="md" marginRight="auto !important">
+              Test #1
+            </Heading>
+            <Text>
+              Si l'utilisateur clique sur un bouton nommé <Input borderColor="blue.500"/>
+              Alors dans la page du navigateur, ce texte sera affiché: <Input borderColor="blue.500"/>
+            </Text>
+          </VStack>
+          <Divider />
+          <VStack marginRight="auto !important">
+            <Heading as="h2" size="md" marginRight="auto !important">
+              Test #2
+            </Heading>
+            <Text>
+              Un élément H1 est présent dans la page et contient le texte
+              suivant: <Input borderColor="blue.500"/>
+            </Text>
+          </VStack>
+
+          <Button colorScheme="blue" marginRight="auto !important">Tester</Button>
         </VStack>
-
-        <Divider my={5} />
-
-        <Grid templateColumns="repeat(5, 1fr)" gap={6}>
-          {exampleProjects.map((project) => (
-            <Box backgroundColor="blue.100" p={3} borderRadius={5} border="1px solid black">
-              <VStack>
-                <p>
-                  <strong>{project.name}</strong>
-                </p>
-                <p>Responsable: {project.owner}</p>
-                <Tag size="lg" variant="solid" colorScheme="blue">
-                  {project.start.toLocaleDateString()} -{" "}
-                  {project.end.toLocaleDateString()}
-                </Tag>
-              </VStack>
-            </Box>
-          ))}
-        </Grid>
       </main>
 
       <footer className={styles.footer}>
