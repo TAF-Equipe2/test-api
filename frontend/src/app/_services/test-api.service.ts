@@ -21,11 +21,14 @@ constructor(
 
 
 execute(method:string, apiUrl :string , input :string , exceptedOutput:string): Observable<any> {
+  const data ={
+    method : method,
+    apiUrl : apiUrl,
+    input:input,
+    exceptedOutput:exceptedOutput
+  } 
   return this.http.post(AUTH_API + 'test-api', {
-    method, 
-    apiUrl, 
-    input, 
-    exceptedOutput
+   data: data
   }, httpOptions);
 }
 }
