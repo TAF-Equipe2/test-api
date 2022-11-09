@@ -14,6 +14,7 @@ import Head from "next/head";
 import { useState } from "react";
 import styles from "../styles/Home.module.css";
 import { TestResults } from "./api/tests";
+import { BiTestTube } from "react-icons/bi";
 
 export default function Home() {
   const [url, setUrl] = useState<string>("");
@@ -72,7 +73,8 @@ export default function Home() {
           <Divider />
           <VStack marginRight="auto !important">
             <Heading as="h2" size="md" marginRight="auto !important">
-              Test #2 {testResults?.secondTest ? <CheckIcon color="green" /> : ""}
+              Test #2{" "}
+              {testResults?.secondTest ? <CheckIcon color="green" /> : ""}
             </Heading>
             <Text>
               Un élément H1 est présent dans la page et contient le texte
@@ -91,6 +93,7 @@ export default function Home() {
             colorScheme="blue"
             marginRight="auto !important"
             onClick={onTest}
+            leftIcon={<BiTestTube color="white"/>}
           >
             Tester
           </Button>
