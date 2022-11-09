@@ -72,7 +72,7 @@ export default function Home() {
           <Divider />
           <VStack marginRight="auto !important">
             <Heading as="h2" size="md" marginRight="auto !important">
-              Test #2 {testResults?.secondTest ? <CheckIcon /> : ""}
+              Test #2 {testResults?.secondTest ? <CheckIcon color="green" /> : ""}
             </Heading>
             <Text>
               Un élément H1 est présent dans la page et contient le texte
