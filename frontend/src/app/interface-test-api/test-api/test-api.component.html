@@ -1,0 +1,83 @@
+<div class="col-md-12">
+  <div class="card card-container">
+
+    <form
+      name="form"
+      (ngSubmit)="f.form.valid && onSubmit()"
+      #f="ngForm"
+      novalidate
+    >
+      <div class="form-group">
+        <label for="method">Méthode</label>
+        <select            
+        class="form-control"
+        required
+        [(ngModel)]="form.method"
+        name="method"
+        #method="ngModel"
+        >
+          <option value="default">----</option>
+          <option *ngFor="let method of methods" [value]="method.id">
+              {{method.name}}
+          </option>
+      </select>
+      <div
+      class="alert alert-danger"
+      role="alert"
+      *ngIf="method.errors && f.submitted"
+    >
+     Une méthode est requise
+    </div>
+      </div>
+      <div class="form-group">
+        <label for="apiUrl">Url de l'api</label>
+        <input
+          type="input"
+          class="form-control"
+          name="apiUrl"
+          [(ngModel)]="form.apiUrl"
+          required
+          #apiUrl="ngModel"
+        />
+        <div
+          class="alert alert-danger"
+          role="alert"
+          *ngIf="apiUrl.errors && f.submitted"
+        >
+         Une url est requise
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="input">Données d'entrée</label>
+        <textarea
+          type="input"
+          class="form-control"
+          name="input"
+          [(ngModel)]="form.input"
+          #input="ngModel"
+        >
+        </textarea>
+
+      </div>
+      <div class="form-group">
+        <label for="exceptedOutput">Données attendues</label>
+        <textarea
+          type="input"
+          class="form-control"
+          name="exceptedOutput"
+          [(ngModel)]="form.exceptedOutput"
+          #exceptedOutput="ngModel"
+        >
+        </textarea>
+
+      </div>
+      <div class="form-group">
+        <button class="btn btn-primary btn-block">
+          Soumettre        
+        </button>
+      </div>
+     
+    </form>
+
+  </div>
+</div>

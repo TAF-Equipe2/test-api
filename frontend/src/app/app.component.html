@@ -5,6 +5,9 @@
       <li class="nav-item">
         <a href="/home" class="nav-link" routerLink="home">Accueil </a>
       </li>
+      <li class="nav-item">
+        <a href="/test-api" class="nav-link" routerLink="test-api">Test API </a>
+      </li>
       <li class="nav-item" *ngIf="showAdminBoard">
         <a href="/admin" class="nav-link" routerLink="admin">Admin Board</a>
       </li>
@@ -27,7 +30,7 @@
         <a href="/profile" class="nav-link" routerLink="profile">{{ username }}</a>
       </li>
       <li class="nav-item">
-        <a href class="nav-link" (click)="logout()">Déconnexion</a>
+        <a href class="nav-link" (click)="logout()">Dï¿½connexion</a>
       </li>
     </ul>
   </nav>
