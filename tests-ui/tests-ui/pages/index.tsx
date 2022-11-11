@@ -1,13 +1,21 @@
 import { CheckIcon } from "@chakra-ui/icons";
 import {
+  Badge,
+  Box,
   Button,
   Checkbox,
+  CircularProgress,
+  CircularProgressLabel,
   Divider,
+  Flex,
   FormControl,
   FormHelperText,
   FormLabel,
   Heading,
+  HStack,
   Input,
+  InputGroup,
+  InputLeftAddon,
   Spinner,
   Tag,
   Text,
@@ -69,6 +77,20 @@ export default function Home() {
     }
   };
 
+  const calculatePercentageTestsSucceeded = () => {
+    let total = 0;
+    let succeeded = 0;
+    total += testResults?.firstTest != undefined && doFirstTest ? 1 : 0;
+    total += testResults?.secondTest != undefined && doSecondTest ? 1 : 0;
+
+    succeeded +=
+      testResults?.firstTest != undefined && testResults.firstTest ? 1 : 0;
+    succeeded +=
+      testResults?.secondTest != undefined && testResults.secondTest ? 1 : 0;
+
+    return (100 * succeeded) / total;
+  };
+  
   return (
     <div className={styles.container}>
       <Head>
@@ -89,11 +111,15 @@ export default function Home() {
         <VStack my={10}>
           <FormControl>
             <FormLabel>URL</FormLabel>
-            <Input
-              borderColor="blue.500"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-            />
+            <InputGroup>
+              <InputLeftAddon children="URL" />
+              <Input
+                borderColor="blue.500"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+              />
+            </InputGroup>
+
             <FormHelperText>Entrer l'URL du site web à tester</FormHelperText>
           </FormControl>
           <Divider />
@@ -162,17 +188,57 @@ export default function Home() {
           >
             Tester
           </Button>
+
+          {(testResults?.firstTest !== undefined ||
+            testResults?.secondTest !== undefined) && (
+            <Box p="5" maxW="500px" borderWidth="2px" borderRadius={5}>
+              <Flex align="baseline" mt={2} mb={3}>
+                <HStack>
+                  <Badge colorScheme="blue" fontSize="lg">
+                    Résultats
+                  </Badge>
+                  <CircularProgress value={calculatePercentageTestsSucceeded()} size="50px" color="green.400">
+                    <CircularProgressLabel>{calculatePercentageTestsSucceeded()}%</CircularProgressLabel>
+                  </CircularProgress>
+                </HStack>
+              </Flex>
+
+              {doFirstTest && testResults?.firstTest != undefined && (
+                <Text>
+                  Test #1:{" "}
+                  {testResults.firstTest ? (
+                    <Tag colorScheme="green" size="sm">
+                      Réussi
+                    </Tag>
+                  ) : (
+                    <Tag colorScheme="red" size="sm">
+                      Non réussi
+                    </Tag>
+                  )}
+                </Text>
+              )}
+
+              {doSecondTest && testResults?.secondTest != undefined && (
+                <Text>
+                  Test #2:{" "}
+                  {testResults.secondTest ? (
+                    <Tag colorScheme="green" size="sm">
+                      Réussi
+                    </Tag>
+                  ) : (
+                    <Tag colorScheme="red" size="sm">
+                      Non réussi
+                    </Tag>
+                  )}
+                </Text>
+              )}
+            </Box>
+          )}
         </VStack>
       </main>
 
       <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Par l'équipe 1
-        </a>
+        <Text>Par l'équipe 1</Text>
       </footer>
     </div>
   );
