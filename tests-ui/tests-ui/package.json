@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "concurrently \"java -jar selenium-server-4.6.0.jar standalone\" \"next dev\"",
     "build": "next build",
-    "start": "next start",
+    "start": "concurrently \"java -jar selenium-server-4.6.0.jar standalone\" \"next start\"",
     "lint": "next lint"
   },
   "dependencies": {
@@ -16,6 +16,7 @@
     "@types/node": "18.11.9",
     "@types/react": "18.0.25",
     "@types/react-dom": "18.0.8",
+    "concurrently": "^7.5.0",
     "eslint": "8.26.0",
     "eslint-config-next": "13.0.2",
     "framer-motion": "^7.6.4",
