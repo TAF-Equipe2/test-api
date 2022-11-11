@@ -11,7 +11,14 @@ export default function handler(
 ) {
   const { Builder, By } = require("selenium-webdriver");
   const body = JSON.parse(req.body);
-  const { url, h1Text, firstTestButtonText, firstTestTextShown } = body;
+  const {
+    url,
+    h1Text,
+    firstTestButtonText,
+    firstTestTextShown,
+    doFirstTest,
+    doSecondTest,
+  } = body;
 
   const testResults: TestResults = {
     firstTest: false,
@@ -26,24 +33,28 @@ export default function handler(
 
     try {
       await driver.get(url);
-      // First test (click on button and text is displayed)
-      let firstTestElements = await driver.findElement(
-        By.xpath(`//*[text()[contains(.,'${firstTestButtonText}')]]`)
-      );
-      const actions = driver.actions({ async: true });
-      await actions.move({ origin: firstTestElements }).click().perform();
-      let firstTestTextShownElements = await driver.findElements(
-        By.xpath(`//*[text()[contains(.,'${firstTestTextShown}')]]`)
-      );
-      testResults.firstTest = firstTestTextShownElements.length > 0;
+      if (doFirstTest) {
+        // First test (click on button and text is displayed)
+        let firstTestElements = await driver.findElement(
+          By.xpath(`//*[text()[contains(.,'${firstTestButtonText}')]]`)
+        );
+        const actions = driver.actions({ async: true });
+        await actions.move({ origin: firstTestElements }).click().perform();
+        let firstTestTextShownElements = await driver.findElements(
+          By.xpath(`//*[text()[contains(.,'${firstTestTextShown}')]]`)
+        );
+        testResults.firstTest = firstTestTextShownElements.length > 0;
+      }
 
-      //  Second test (h1 containing text)
-      await driver.get(url);
-      let secondElements = await driver.findElements(By.tagName("h1"));
-      for (let e of secondElements) {
-        const textElement: string = await e.getText();
-        if (textElement.includes(h1Text)) {
-          testResults.secondTest = true;
+      if (doSecondTest) {
+        //  Second test (h1 containing text)
+        await driver.get(url);
+        let secondElements = await driver.findElements(By.tagName("h1"));
+        for (let e of secondElements) {
+          const textElement: string = await e.getText();
+          if (textElement.includes(h1Text)) {
+            testResults.secondTest = true;
+          }
         }
       }
     } finally {

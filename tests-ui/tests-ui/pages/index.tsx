@@ -1,6 +1,7 @@
 import { CheckIcon } from "@chakra-ui/icons";
 import {
   Button,
+  Checkbox,
   Divider,
   FormControl,
   FormHelperText,
@@ -8,6 +9,7 @@ import {
   Heading,
   Input,
   Spinner,
+  Tag,
   Text,
   useDisclosure,
   VStack,
@@ -30,6 +32,8 @@ export default function Home() {
   const [h1Text, setH1Text] = useState<string>("");
   const [testResults, setTestResults] = useState<TestResults>();
   const [isExecutingTests, setIsExecutingTests] = useState<boolean>(false);
+  const [doFirstTest, setDoFirstTest] = useState<boolean>(false);
+  const [doSecondTest, setDoSecondTest] = useState<boolean>(false);
 
   const onTest = () => {
     if (url === "") {
@@ -37,10 +41,20 @@ export default function Home() {
         "Il faut choisir un site web à tester. Veuillez entrer un URL valide."
       );
       onOpen();
+    } else if (!doFirstTest && !doSecondTest) {
+      setAlertMessage("Veuillez sélectionner au moins un test");
+      onOpen();
     } else {
       setIsExecutingTests(true);
       const executeTests = async () => {
-        const data = { url, h1Text, firstTestButtonText, firstTestTextShown };
+        const data = {
+          url,
+          h1Text,
+          firstTestButtonText,
+          firstTestTextShown,
+          doFirstTest,
+          doSecondTest,
+        };
         const response = await fetch("/api/tests", {
           method: "POST",
           body: JSON.stringify(data),
@@ -84,40 +98,55 @@ export default function Home() {
           </FormControl>
           <Divider />
           <VStack>
-            <Heading as="h2" size="md" marginRight="auto !important">
-              Test #1{" "}
-              {testResults?.firstTest ? <CheckIcon color="green" /> : ""}
-            </Heading>
+            <Checkbox
+              isChecked={doFirstTest}
+              onChange={(e) => setDoFirstTest(e.target.checked)}
+              marginRight="auto"
+            >
+              <Heading as="h2" size="md" marginRight="auto !important">
+                Test #1 - <Tag colorScheme="blue">Navigation</Tag>
+                {testResults?.firstTest ? <CheckIcon color="green" /> : ""}
+              </Heading>
+            </Checkbox>
             <Text>
               Si l'utilisateur clique sur un bouton nommé{" "}
               <Input
-                borderColor="blue.500"
+                borderColor={doFirstTest ? "blue.500" : "lightgray"}
                 value={firstTestButtonText}
                 onChange={(e) => setFirstTestButtonText(e.target.value)}
+                isDisabled={!doFirstTest}
               />
               Alors dans la page du navigateur, ce texte sera affiché:{" "}
               <Input
-                borderColor="blue.500"
+                borderColor={doFirstTest ? "blue.500" : "lightgray"}
                 value={firstTestTextShown}
                 onChange={(e) => setFirstTestTextShown(e.target.value)}
+                isDisabled={!doFirstTest}
               />
             </Text>
           </VStack>
           <Divider />
           <VStack marginRight="auto !important">
-            <Heading as="h2" size="md" marginRight="auto !important">
-              Test #2{" "}
-              {testResults?.secondTest ? <CheckIcon color="green" /> : ""}
-            </Heading>
+            <Checkbox
+              isChecked={doSecondTest}
+              onChange={(e) => setDoSecondTest(e.target.checked)}
+              marginRight="auto"
+            >
+              <Heading as="h2" size="md" marginRight="auto !important">
+                Test #2 - <Tag colorScheme="blue">Titre sur la page</Tag>
+                {testResults?.secondTest ? <CheckIcon color="green" /> : ""}
+              </Heading>
+            </Checkbox>
             <Text>
               Un élément H1 est présent dans la page et contient le texte
               suivant:{" "}
               <Input
-                borderColor="blue.500"
+                borderColor={doSecondTest ? "blue.500" : "lightgray"}
                 value={h1Text}
                 onChange={(e) => {
                   setH1Text(e.target.value);
                 }}
+                isDisabled={!doSecondTest}
               />
             </Text>
           </VStack>
@@ -142,7 +171,7 @@ export default function Home() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by Équipe 1
+          Par l'équipe 1
         </a>
       </footer>
     </div>
