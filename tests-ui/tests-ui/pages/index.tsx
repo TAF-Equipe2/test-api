@@ -7,7 +7,9 @@ import {
   FormLabel,
   Heading,
   Input,
+  Spinner,
   Text,
+  useDisclosure,
   VStack,
 } from "@chakra-ui/react";
 import Head from "next/head";
@@ -15,26 +17,40 @@ import { useState } from "react";
 import styles from "../styles/Home.module.css";
 import { TestResults } from "./api/tests";
 import { BiTestTube } from "react-icons/bi";
+import Alert from "../components/Alert";
+import React from "react";
 
 export default function Home() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = React.useRef();
+  const [alertMessage, setAlertMessage] = useState("");
   const [url, setUrl] = useState<string>("");
   const [h1Text, setH1Text] = useState<string>("");
   const [testResults, setTestResults] = useState<TestResults>();
+  const [isExecutingTests, setIsExecutingTests] = useState<boolean>(false);
 
   const onTest = () => {
-    const executeTests = async () => {
-      const data = { url, h1Text };
-      const response = await fetch("/api/tests", {
-        method: "POST",
-        body: JSON.stringify(data),
+    if (url === "") {
+      setAlertMessage(
+        "Il faut choisir un site web à tester. Veuillez entrer un URL valide."
+      );
+      onOpen();
+    } else {
+      setIsExecutingTests(true);
+      const executeTests = async () => {
+        const data = { url, h1Text };
+        const response = await fetch("/api/tests", {
+          method: "POST",
+          body: JSON.stringify(data),
+        });
+        return response.json();
+      };
+      executeTests().then((data) => {
+        console.log(data);
+        setTestResults(data);
+        setIsExecutingTests(false);
       });
-      return response.json();
-    };
-
-    executeTests().then((data) => {
-      console.log(data);
-      setTestResults(data);
-    });
+    }
   };
 
   return (
@@ -46,6 +62,13 @@ export default function Home() {
 
       <main className={styles.main}>
         <Heading>Tests UI</Heading>
+
+        <Alert
+          onClose={onClose}
+          isOpen={isOpen}
+          cancelRef={cancelRef}
+          text={alertMessage}
+        />
 
         <VStack my={10}>
           <FormControl>
@@ -93,7 +116,10 @@ export default function Home() {
             colorScheme="blue"
             marginRight="auto !important"
             onClick={onTest}
-            leftIcon={<BiTestTube color="white" />}
+            leftIcon={
+              isExecutingTests ? <Spinner /> : <BiTestTube color="white" />
+            }
+            disabled={isExecutingTests}
           >
             Tester
           </Button>
