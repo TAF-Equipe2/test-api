@@ -8,6 +8,7 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { FaHome } from "react-icons/fa";
+import Image from "next/image";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -17,6 +18,13 @@ export default function App({ Component, pageProps }: AppProps) {
           <Button colorScheme="blue" leftIcon={<FaHome />}>
             <Link href="/">Accueil</Link>
           </Button>
+          <Image
+            src="/etslogo.png"
+            alt="Logo ÉTS"
+            width={100}
+            height={50}
+            style={{ marginLeft: "auto" }}
+          />
         </HStack>
         <Divider />
         <Component {...pageProps} />
