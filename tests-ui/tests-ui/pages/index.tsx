@@ -25,6 +25,8 @@ export default function Home() {
   const cancelRef = React.useRef();
   const [alertMessage, setAlertMessage] = useState("");
   const [url, setUrl] = useState<string>("");
+  const [firstTestButtonText, setFirstTestButtonText] = useState<string>("");
+  const [firstTestTextShown, setFirstTestTextShown] = useState<string>("");
   const [h1Text, setH1Text] = useState<string>("");
   const [testResults, setTestResults] = useState<TestResults>();
   const [isExecutingTests, setIsExecutingTests] = useState<boolean>(false);
@@ -38,7 +40,7 @@ export default function Home() {
     } else {
       setIsExecutingTests(true);
       const executeTests = async () => {
-        const data = { url, h1Text };
+        const data = { url, h1Text, firstTestButtonText, firstTestTextShown };
         const response = await fetch("/api/tests", {
           method: "POST",
           body: JSON.stringify(data),
@@ -88,9 +90,17 @@ export default function Home() {
             </Heading>
             <Text>
               Si l'utilisateur clique sur un bouton nommé{" "}
-              <Input borderColor="blue.500" />
+              <Input
+                borderColor="blue.500"
+                value={firstTestButtonText}
+                onChange={(e) => setFirstTestButtonText(e.target.value)}
+              />
               Alors dans la page du navigateur, ce texte sera affiché:{" "}
-              <Input borderColor="blue.500" />
+              <Input
+                borderColor="blue.500"
+                value={firstTestTextShown}
+                onChange={(e) => setFirstTestTextShown(e.target.value)}
+              />
             </Text>
           </VStack>
           <Divider />
