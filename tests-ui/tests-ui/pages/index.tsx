@@ -6,7 +6,6 @@ import {
   Checkbox,
   CircularProgress,
   CircularProgressLabel,
-  Divider,
   Flex,
   FormControl,
   FormHelperText,
@@ -39,10 +38,18 @@ export default function Home() {
   const [firstTestButtonText, setFirstTestButtonText] = useState<string>("");
   const [firstTestTextShown, setFirstTestTextShown] = useState<string>("");
   const [h1Text, setH1Text] = useState<string>("");
+  const [htmlSelectorIdentifier, setHtmlSelectorIdentifier] =
+    useState<string>("");
+  const [htmlSelectorPassword, setHtmlSelectorPassword] = useState<string>("");
+  const [identifier, setIdentifier] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [thirdTestButtonName, setThirdTestButtonName] = useState<string>("");
+  const [thirdTestTextShown, setThirdTestTextShown] = useState<string>("");
   const [testResults, setTestResults] = useState<TestResults>();
   const [isExecutingTests, setIsExecutingTests] = useState<boolean>(false);
   const [doFirstTest, setDoFirstTest] = useState<boolean>(false);
   const [doSecondTest, setDoSecondTest] = useState<boolean>(false);
+  const [doThirdTest, setDoThirdTest] = useState<boolean>(false);
 
   const onTest = () => {
     if (url === "") {
@@ -50,7 +57,7 @@ export default function Home() {
         "Il faut choisir un site web à tester. Veuillez entrer un URL valide."
       );
       onOpen();
-    } else if (!doFirstTest && !doSecondTest) {
+    } else if (!doFirstTest && !doSecondTest && !doThirdTest) {
       setAlertMessage("Veuillez sélectionner au moins un test");
       onOpen();
     } else if (!isValidHttpUrl(url)) {
@@ -66,6 +73,13 @@ export default function Home() {
           firstTestTextShown,
           doFirstTest,
           doSecondTest,
+          doThirdTest,
+          htmlSelectorIdentifier,
+          identifier,
+          htmlSelectorPassword,
+          password,
+          thirdTestButtonName,
+          thirdTestTextShown,
         };
         const response = await fetch("/api/tests", {
           method: "POST",
@@ -86,11 +100,14 @@ export default function Home() {
     let succeeded = 0;
     total += testResults?.firstTest != undefined && doFirstTest ? 1 : 0;
     total += testResults?.secondTest != undefined && doSecondTest ? 1 : 0;
+    total += testResults?.thirdTest != undefined && doThirdTest ? 1 : 0;
 
     succeeded +=
       testResults?.firstTest != undefined && testResults.firstTest ? 1 : 0;
     succeeded +=
       testResults?.secondTest != undefined && testResults.secondTest ? 1 : 0;
+    succeeded +=
+      testResults?.thirdTest != undefined && testResults.thirdTest ? 1 : 0;
 
     return (100 * succeeded) / total;
   };
@@ -130,10 +147,12 @@ export default function Home() {
                 onChange={(e) => setUrl(e.target.value)}
               />
             </InputGroup>
-
-            <FormHelperText>Entrer l'URL du site web à tester (doit commencer par http:// ou https://)</FormHelperText>
+            <FormHelperText>
+              Entrer l'URL du site web à tester (doit commencer par http:// ou
+              https://)
+            </FormHelperText>
           </FormControl>
-          <Divider />
+
           <VStack p="5" maxW="750px" borderWidth="2px" borderRadius={5}>
             <Checkbox
               isChecked={doFirstTest}
@@ -142,7 +161,6 @@ export default function Home() {
             >
               <Heading as="h2" size="md" marginRight="auto !important">
                 Cas #1 <Tag colorScheme="blue">Navigation</Tag>
-                {testResults?.firstTest ? <CheckIcon color="green" /> : ""}
               </Heading>
             </Checkbox>
             <Text>
@@ -162,11 +180,11 @@ export default function Home() {
               />
             </Text>
           </VStack>
-          <Divider />
+
           <VStack
             marginRight="auto !important"
             p="5"
-            maxW="750px"
+            maxWidth="750px"
             borderWidth="2px"
             borderRadius={5}
           >
@@ -177,7 +195,6 @@ export default function Home() {
             >
               <Heading as="h2" size="md" marginRight="auto !important">
                 Cas #2 <Tag colorScheme="blue">Titre sur la page</Tag>
-                {testResults?.secondTest ? <CheckIcon color="green" /> : ""}
               </Heading>
             </Checkbox>
             <Text>
@@ -194,6 +211,93 @@ export default function Home() {
             </Text>
           </VStack>
 
+          <VStack
+            marginRight="auto !important"
+            p="5"
+            borderWidth="2px"
+            maxWidth="750px"
+            borderRadius={5}
+          >
+            <Checkbox
+              isChecked={doThirdTest}
+              onChange={(e) => setDoThirdTest(e.target.checked)}
+              marginRight="auto"
+            >
+              <Heading as="h2" size="md" marginRight="auto !important">
+                Cas #3 <Tag colorScheme="blue">Authentification</Tag>
+              </Heading>
+            </Checkbox>
+            <Tag>
+              Un sélecteur HTML peut commencer par # ou . (Par exemple:
+              #submitButton). Vous pouvez aussi ne rien mettre au début du sélecteur pour
+              faire la recherche avec l'attribut 'name'
+            </Tag>
+            <HStack alignItems="end" marginRight="auto !important">
+              <FormControl>
+                <FormLabel>Sélecteur HTML de l'identifiant</FormLabel>
+                <Input
+                  borderColor={doThirdTest ? "blue.500" : "lightgray"}
+                  isDisabled={!doThirdTest}
+                  value={htmlSelectorIdentifier}
+                  onChange={(e) => setHtmlSelectorIdentifier(e.target.value)}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel>Identifiant</FormLabel>
+                <Input
+                  borderColor={doThirdTest ? "blue.500" : "lightgray"}
+                  isDisabled={!doThirdTest}
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
+                />
+              </FormControl>
+            </HStack>
+
+            <HStack alignItems="end" marginRight="auto !important">
+              <FormControl>
+                <FormLabel>Sélecteur HTML du mot de passe</FormLabel>
+                <Input
+                  borderColor={doThirdTest ? "blue.500" : "lightgray"}
+                  isDisabled={!doThirdTest}
+                  value={htmlSelectorPassword}
+                  onChange={(e) => setHtmlSelectorPassword(e.target.value)}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel>Mot de passe</FormLabel>
+                <Input
+                  borderColor={doThirdTest ? "blue.500" : "lightgray"}
+                  isDisabled={!doThirdTest}
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </FormControl>
+            </HStack>
+            <VStack marginRight="auto !important">
+              <FormControl>
+                <FormLabel>Nom du bouton de connexion</FormLabel>
+                <Input
+                  borderColor={doThirdTest ? "blue.500" : "lightgray"}
+                  isDisabled={!doThirdTest}
+                  value={thirdTestButtonName}
+                  onChange={(e) => setThirdTestButtonName(e.target.value)}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel>
+                  Texte affiché suite à l'authentification réussie
+                </FormLabel>
+                <Input
+                  borderColor={doThirdTest ? "blue.500" : "lightgray"}
+                  isDisabled={!doThirdTest}
+                  value={thirdTestTextShown}
+                  onChange={(e) => setThirdTestTextShown(e.target.value)}
+                />
+              </FormControl>
+            </VStack>
+          </VStack>
+
           <Button
             colorScheme="blue"
             marginRight="auto !important"
@@ -203,11 +307,12 @@ export default function Home() {
             }
             disabled={isExecutingTests}
           >
-            Tester
+            Exécuter les tests
           </Button>
 
           {(testResults?.firstTest !== undefined ||
-            testResults?.secondTest !== undefined) && (
+            testResults?.secondTest !== undefined ||
+            testResults?.thirdTest !== undefined) && (
             <Box p="5" maxW="600px" borderWidth="2px" borderRadius={5}>
               <Flex align="baseline" mt={2} mb={3}>
                 <HStack>
@@ -251,6 +356,24 @@ export default function Home() {
                     Titre sur la page
                   </Tag>
                   {testResults.secondTest ? (
+                    <Tag colorScheme="green" size="sm" ml={2}>
+                      Réussi <CheckIcon ml={2} />
+                    </Tag>
+                  ) : (
+                    <Tag colorScheme="red" size="sm" ml={2}>
+                      Non réussi <SmallCloseIcon ml={2} />
+                    </Tag>
+                  )}
+                </Text>
+              )}
+
+              {doThirdTest && testResults?.thirdTest != undefined && (
+                <Text>
+                  Cas #3{" "}
+                  <Tag colorScheme="blue" size="sm">
+                    Authentification
+                  </Tag>
+                  {testResults.thirdTest ? (
                     <Tag colorScheme="green" size="sm" ml={2}>
                       Réussi <CheckIcon ml={2} />
                     </Tag>

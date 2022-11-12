@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 export type TestResults = {
   firstTest: boolean;
   secondTest: boolean;
+  thirdTest: boolean;
 };
 
 const titleTags = ["h1", "h2", "h3", "h4", "h5", "h6"];
@@ -20,11 +21,19 @@ export default function handler(
     firstTestTextShown,
     doFirstTest,
     doSecondTest,
+    doThirdTest,
+    htmlSelectorIdentifier,
+    identifier,
+    htmlSelectorPassword,
+    password,
+    thirdTestButtonName,
+    thirdTestTextShown,
   } = body;
 
   const testResults: TestResults = {
     firstTest: false,
     secondTest: false,
+    thirdTest: false,
   };
 
   (async function executeTests() {
@@ -36,7 +45,7 @@ export default function handler(
     try {
       await driver.get(url);
       if (doFirstTest) {
-        // First test (click on button and text is displayed)
+        // Tester le texte affiché suite à un clic sur un boutton
         let firstTestElements = await driver.findElement(
           By.xpath(`//*[text()[contains(.,'${firstTestButtonText}')]]`)
         );
@@ -49,7 +58,7 @@ export default function handler(
       }
 
       if (doSecondTest) {
-        //  Second test (h1 containing text)
+        //  Tester le texte dans une balise de titre
         await driver.get(url);
         for (const title of titleTags) {
           let secondElements = await driver.findElements(By.tagName(title));
@@ -61,7 +70,48 @@ export default function handler(
             }
           }
         }
-        
+      }
+
+      if (doThirdTest) {
+        //  Tester l'authentification
+        await driver.get(url);
+        //  Identifiant
+        let identifierElement;
+        if (htmlSelectorIdentifier.charAt(0) === '#') {
+          identifierElement = await driver.findElement(By.id(htmlSelectorIdentifier.substring(1)))
+        } else if (htmlSelectorIdentifier.charAt(0) === '.') {
+          identifierElement = await driver.findElement(By.className(htmlSelectorIdentifier.substring(1)))
+        } else {
+          identifierElement = await driver.findElement(By.name(htmlSelectorIdentifier))
+        }
+        const actionsIdentifier = driver.actions({async: true});  
+        await actionsIdentifier.move({origin:identifierElement}).press().perform();
+        await driver.actions().sendKeys(identifier).perform();
+
+        //  Mot de passe
+        let passwordElement;
+        if (htmlSelectorPassword.charAt(0) === '#') {
+          passwordElement = await driver.findElement(By.id(htmlSelectorPassword.substring(1)))
+        } else if (htmlSelectorPassword.charAt(0) === '.') {
+          passwordElement = await driver.findElement(By.className(htmlSelectorPassword.substring(1)))
+        } else {
+          passwordElement = await driver.findElement(By.name(htmlSelectorPassword))
+        }
+        const actionsPassword = driver.actions({async: true});  
+        await actionsPassword.move({origin:passwordElement}).press().perform();
+        await driver.actions().sendKeys(password).perform();
+
+        //  Cliquer sur le bouton pour s'authentifier
+        let authenticateButton = await driver.findElement(
+          By.xpath(`//*[text()[contains(.,'${thirdTestButtonName}')]]`)
+        );
+        const actions = driver.actions({ async: true });
+        await actions.move({ origin: authenticateButton }).click().perform();
+        await driver.manage().setTimeouts( { implicit: 2000 } );
+        let thirdTestTextShownElements = await driver.findElements(
+          By.xpath(`//*[text()[contains(.,'${thirdTestTextShown}')]]`)
+        );
+        testResults.thirdTest = thirdTestTextShownElements.length > 0;
       }
     } finally {
       res.status(200).json(testResults);
