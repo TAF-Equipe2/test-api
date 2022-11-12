@@ -1,12 +1,6 @@
-import { CheckIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import {
-  Badge,
-  Box,
   Button,
   Checkbox,
-  CircularProgress,
-  CircularProgressLabel,
-  Flex,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -24,11 +18,12 @@ import {
 import Head from "next/head";
 import { useState } from "react";
 import styles from "../styles/Home.module.css";
-import { TestResults } from "./api/tests";
+import { TestResults as TestResultsType } from "./api/tests";
 import { BiTestTube } from "react-icons/bi";
 import Alert from "../components/Alert";
 import React from "react";
 import { isValidHttpUrl } from "../utils/helpers";
+import TestResults from "../components/TestResults";
 
 export default function Home() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -45,7 +40,7 @@ export default function Home() {
   const [password, setPassword] = useState<string>("");
   const [thirdTestButtonName, setThirdTestButtonName] = useState<string>("");
   const [thirdTestTextShown, setThirdTestTextShown] = useState<string>("");
-  const [testResults, setTestResults] = useState<TestResults>();
+  const [testResults, setTestResults] = useState<TestResultsType>();
   const [isExecutingTests, setIsExecutingTests] = useState<boolean>(false);
   const [doFirstTest, setDoFirstTest] = useState<boolean>(false);
   const [doSecondTest, setDoSecondTest] = useState<boolean>(false);
@@ -112,11 +107,11 @@ export default function Home() {
     return (100 * succeeded) / total;
   };
 
-  const getPercentageTestsSucceeded = () => {
+  const getPercentageTestsSucceeded = (): number => {
     const percentageValue = calculatePercentageTestsSucceeded();
     return !isFinite(percentageValue) || isNaN(percentageValue)
       ? 0
-      : percentageValue.toFixed(1);
+      : +percentageValue.toFixed(1);
   };
 
   return (
@@ -229,8 +224,8 @@ export default function Home() {
             </Checkbox>
             <Tag>
               Un sélecteur HTML peut commencer par # ou . (Par exemple:
-              #submitButton). Vous pouvez aussi ne rien mettre au début du sélecteur pour
-              faire la recherche avec l'attribut 'name'
+              #submitButton). Vous pouvez aussi ne rien mettre au début du
+              sélecteur pour faire la recherche avec l'attribut 'name'
             </Tag>
             <HStack alignItems="end" marginRight="auto !important">
               <FormControl>
@@ -310,81 +305,14 @@ export default function Home() {
             Exécuter les tests
           </Button>
 
-          {(testResults?.firstTest !== undefined ||
-            testResults?.secondTest !== undefined ||
-            testResults?.thirdTest !== undefined) && (
-            <Box p="5" maxW="600px" borderWidth="2px" borderRadius={5}>
-              <Flex align="baseline" mt={2} mb={3}>
-                <HStack>
-                  <Badge colorScheme="blue" fontSize="lg">
-                    Résultats
-                  </Badge>
-                  <CircularProgress
-                    value={getPercentageTestsSucceeded()}
-                    size="50px"
-                    color="green.400"
-                  >
-                    <CircularProgressLabel>
-                      {getPercentageTestsSucceeded()}%
-                    </CircularProgressLabel>
-                  </CircularProgress>
-                </HStack>
-              </Flex>
-
-              {doFirstTest && testResults?.firstTest != undefined && (
-                <Text>
-                  Cas #1{" "}
-                  <Tag colorScheme="blue" size="sm">
-                    Navigation
-                  </Tag>
-                  {testResults.firstTest ? (
-                    <Tag colorScheme="green" size="sm" ml={2}>
-                      Réussi <CheckIcon ml={2} />
-                    </Tag>
-                  ) : (
-                    <Tag colorScheme="red" size="sm" ml={2}>
-                      Non réussi <SmallCloseIcon ml={2} />
-                    </Tag>
-                  )}
-                </Text>
-              )}
-
-              {doSecondTest && testResults?.secondTest != undefined && (
-                <Text>
-                  Cas #2{" "}
-                  <Tag colorScheme="blue" size="sm">
-                    Titre sur la page
-                  </Tag>
-                  {testResults.secondTest ? (
-                    <Tag colorScheme="green" size="sm" ml={2}>
-                      Réussi <CheckIcon ml={2} />
-                    </Tag>
-                  ) : (
-                    <Tag colorScheme="red" size="sm" ml={2}>
-                      Non réussi <SmallCloseIcon ml={2} />
-                    </Tag>
-                  )}
-                </Text>
-              )}
-
-              {doThirdTest && testResults?.thirdTest != undefined && (
-                <Text>
-                  Cas #3{" "}
-                  <Tag colorScheme="blue" size="sm">
-                    Authentification
-                  </Tag>
-                  {testResults.thirdTest ? (
-                    <Tag colorScheme="green" size="sm" ml={2}>
-                      Réussi <CheckIcon ml={2} />
-                    </Tag>
-                  ) : (
-                    <Tag colorScheme="red" size="sm" ml={2}>
-                      Non réussi <SmallCloseIcon ml={2} />
-                    </Tag>
-                  )}
-                </Text>
-              )}
-            </Box>
+          {testResults && (
+            <TestResults
+              doFirstTest={doFirstTest}
+              doSecondTest={doSecondTest}
+              doThirdTest={doThirdTest}
+              testResults={testResults}
+              getPercentageTestsSucceeded={getPercentageTestsSucceeded}
+            />
           )}
         </VStack>
       </main>
