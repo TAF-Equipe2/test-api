@@ -5,6 +5,8 @@ export type TestResults = {
   secondTest: boolean;
 };
 
+const titleTags = ["h1", "h2", "h3", "h4", "h5", "h6"];
+
 export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<TestResults>
@@ -49,13 +51,17 @@ export default function handler(
       if (doSecondTest) {
         //  Second test (h1 containing text)
         await driver.get(url);
-        let secondElements = await driver.findElements(By.tagName("h1"));
-        for (let e of secondElements) {
-          const textElement: string = await e.getText();
-          if (textElement.includes(h1Text)) {
-            testResults.secondTest = true;
+        for (const title of titleTags) {
+          let secondElements = await driver.findElements(By.tagName(title));
+          for (let e of secondElements) {
+            const textElement: string = await e.getText();
+            if (textElement.includes(h1Text)) {
+              testResults.secondTest = true;
+              break;
+            }
           }
         }
+        
       }
     } finally {
       res.status(200).json(testResults);

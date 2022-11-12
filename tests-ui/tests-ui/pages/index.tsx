@@ -1,4 +1,4 @@
-import { CheckIcon } from "@chakra-ui/icons";
+import { CheckIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import {
   Badge,
   Box,
@@ -29,6 +29,7 @@ import { TestResults } from "./api/tests";
 import { BiTestTube } from "react-icons/bi";
 import Alert from "../components/Alert";
 import React from "react";
+import { isValidHttpUrl } from "../utils/helpers";
 
 export default function Home() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -51,6 +52,9 @@ export default function Home() {
       onOpen();
     } else if (!doFirstTest && !doSecondTest) {
       setAlertMessage("Veuillez sélectionner au moins un test");
+      onOpen();
+    } else if (!isValidHttpUrl(url)) {
+      setAlertMessage("L'URL du site web doit être valide.");
       onOpen();
     } else {
       setIsExecutingTests(true);
@@ -90,7 +94,14 @@ export default function Home() {
 
     return (100 * succeeded) / total;
   };
-  
+
+  const getPercentageTestsSucceeded = () => {
+    const percentageValue = calculatePercentageTestsSucceeded();
+    return !isFinite(percentageValue) || isNaN(percentageValue)
+      ? 0
+      : percentageValue;
+  };
+
   return (
     <div className={styles.container}>
       <Head>
@@ -120,17 +131,17 @@ export default function Home() {
               />
             </InputGroup>
 
-            <FormHelperText>Entrer l'URL du site web à tester</FormHelperText>
+            <FormHelperText>Entrer l'URL du site web à tester (doit commencer par http:// ou https://)</FormHelperText>
           </FormControl>
           <Divider />
-          <VStack>
+          <VStack p="5" maxW="750px" borderWidth="2px" borderRadius={5}>
             <Checkbox
               isChecked={doFirstTest}
               onChange={(e) => setDoFirstTest(e.target.checked)}
               marginRight="auto"
             >
               <Heading as="h2" size="md" marginRight="auto !important">
-                Test #1 - <Tag colorScheme="blue">Navigation</Tag>
+                Cas #1 <Tag colorScheme="blue">Navigation</Tag>
                 {testResults?.firstTest ? <CheckIcon color="green" /> : ""}
               </Heading>
             </Checkbox>
@@ -152,20 +163,26 @@ export default function Home() {
             </Text>
           </VStack>
           <Divider />
-          <VStack marginRight="auto !important">
+          <VStack
+            marginRight="auto !important"
+            p="5"
+            maxW="750px"
+            borderWidth="2px"
+            borderRadius={5}
+          >
             <Checkbox
               isChecked={doSecondTest}
               onChange={(e) => setDoSecondTest(e.target.checked)}
               marginRight="auto"
             >
               <Heading as="h2" size="md" marginRight="auto !important">
-                Test #2 - <Tag colorScheme="blue">Titre sur la page</Tag>
+                Cas #2 <Tag colorScheme="blue">Titre sur la page</Tag>
                 {testResults?.secondTest ? <CheckIcon color="green" /> : ""}
               </Heading>
             </Checkbox>
             <Text>
-              Un élément H1 est présent dans la page et contient le texte
-              suivant:{" "}
+              Un élément de titre (H1 à H6) est présent dans la page et contient
+              le texte suivant:{" "}
               <Input
                 borderColor={doSecondTest ? "blue.500" : "lightgray"}
                 value={h1Text}
@@ -191,28 +208,37 @@ export default function Home() {
 
           {(testResults?.firstTest !== undefined ||
             testResults?.secondTest !== undefined) && (
-            <Box p="5" maxW="500px" borderWidth="2px" borderRadius={5}>
+            <Box p="5" maxW="600px" borderWidth="2px" borderRadius={5}>
               <Flex align="baseline" mt={2} mb={3}>
                 <HStack>
                   <Badge colorScheme="blue" fontSize="lg">
                     Résultats
                   </Badge>
-                  <CircularProgress value={calculatePercentageTestsSucceeded()} size="50px" color="green.400">
-                    <CircularProgressLabel>{calculatePercentageTestsSucceeded()}%</CircularProgressLabel>
+                  <CircularProgress
+                    value={getPercentageTestsSucceeded()}
+                    size="50px"
+                    color="green.400"
+                  >
+                    <CircularProgressLabel>
+                      {getPercentageTestsSucceeded()}%
+                    </CircularProgressLabel>
                   </CircularProgress>
                 </HStack>
               </Flex>
 
               {doFirstTest && testResults?.firstTest != undefined && (
                 <Text>
-                  Test #1:{" "}
+                  Cas #1{" "}
+                  <Tag colorScheme="blue" size="sm">
+                    Navigation
+                  </Tag>
                   {testResults.firstTest ? (
-                    <Tag colorScheme="green" size="sm">
-                      Réussi
+                    <Tag colorScheme="green" size="sm" ml={2}>
+                      Réussi <CheckIcon ml={2} />
                     </Tag>
                   ) : (
-                    <Tag colorScheme="red" size="sm">
-                      Non réussi
+                    <Tag colorScheme="red" size="sm" ml={2}>
+                      Non réussi <SmallCloseIcon ml={2} />
                     </Tag>
                   )}
                 </Text>
@@ -220,14 +246,17 @@ export default function Home() {
 
               {doSecondTest && testResults?.secondTest != undefined && (
                 <Text>
-                  Test #2:{" "}
+                  Cas #2{" "}
+                  <Tag colorScheme="blue" size="sm">
+                    Titre sur la page
+                  </Tag>
                   {testResults.secondTest ? (
-                    <Tag colorScheme="green" size="sm">
-                      Réussi
+                    <Tag colorScheme="green" size="sm" ml={2}>
+                      Réussi <CheckIcon ml={2} />
                     </Tag>
                   ) : (
-                    <Tag colorScheme="red" size="sm">
-                      Non réussi
+                    <Tag colorScheme="red" size="sm" ml={2}>
+                      Non réussi <SmallCloseIcon ml={2} />
                     </Tag>
                   )}
                 </Text>
