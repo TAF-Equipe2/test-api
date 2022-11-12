@@ -116,7 +116,7 @@ export default function Home() {
     const percentageValue = calculatePercentageTestsSucceeded();
     return !isFinite(percentageValue) || isNaN(percentageValue)
       ? 0
-      : percentageValue;
+      : percentageValue.toFixed(1);
   };
 
   return (
