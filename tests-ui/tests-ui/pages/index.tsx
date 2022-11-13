@@ -25,11 +25,13 @@ import React from "react";
 import { isValidHttpUrl } from "../utils/helpers";
 import TestResults from "../components/TestResults";
 
+const DEFAULT_URL = "http://localhost:4200/login";
+
 export default function Home() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
   const [alertMessage, setAlertMessage] = useState("");
-  const [url, setUrl] = useState<string>("");
+  const [url, setUrl] = useState<string>(DEFAULT_URL);
   const [firstTestButtonText, setFirstTestButtonText] = useState<string>("");
   const [firstTestTextShown, setFirstTestTextShown] = useState<string>("");
   const [h1Text, setH1Text] = useState<string>("");
