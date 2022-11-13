@@ -28,6 +28,7 @@ export default function handler(
     password,
     thirdTestButtonName,
     thirdTestTextShown,
+    thirdTestLoginButton,
   } = body;
 
   const testResults: TestResults = {
@@ -75,30 +76,56 @@ export default function handler(
       if (doThirdTest) {
         //  Tester l'authentification
         await driver.get(url);
+        //  Rediriger vers la page de connexion
+        if (thirdTestLoginButton) {
+          let loginElement = await driver.findElement(
+            By.xpath(`//*[text()[contains(.,'${thirdTestLoginButton}')]]`)
+          );
+          const actions = driver.actions({ async: true });
+          await actions.move({ origin: loginElement }).click().perform();
+        }
         //  Identifiant
         let identifierElement;
-        if (htmlSelectorIdentifier.charAt(0) === '#') {
-          identifierElement = await driver.findElement(By.id(htmlSelectorIdentifier.substring(1)))
-        } else if (htmlSelectorIdentifier.charAt(0) === '.') {
-          identifierElement = await driver.findElement(By.className(htmlSelectorIdentifier.substring(1)))
+        if (htmlSelectorIdentifier.charAt(0) === "#") {
+          identifierElement = await driver.findElement(
+            By.id(htmlSelectorIdentifier.substring(1))
+          );
+        } else if (htmlSelectorIdentifier.charAt(0) === ".") {
+          identifierElement = await driver.findElement(
+            By.className(htmlSelectorIdentifier.substring(1))
+          );
         } else {
-          identifierElement = await driver.findElement(By.name(htmlSelectorIdentifier))
+          identifierElement = await driver.findElement(
+            By.name(htmlSelectorIdentifier)
+          );
         }
-        const actionsIdentifier = driver.actions({async: true});  
-        await actionsIdentifier.move({origin:identifierElement}).press().perform();
+        const actionsIdentifier = driver.actions({ async: true });
+        await actionsIdentifier
+          .move({ origin: identifierElement })
+          .press()
+          .perform();
         await driver.actions().sendKeys(identifier).perform();
 
         //  Mot de passe
         let passwordElement;
-        if (htmlSelectorPassword.charAt(0) === '#') {
-          passwordElement = await driver.findElement(By.id(htmlSelectorPassword.substring(1)))
-        } else if (htmlSelectorPassword.charAt(0) === '.') {
-          passwordElement = await driver.findElement(By.className(htmlSelectorPassword.substring(1)))
+        if (htmlSelectorPassword.charAt(0) === "#") {
+          passwordElement = await driver.findElement(
+            By.id(htmlSelectorPassword.substring(1))
+          );
+        } else if (htmlSelectorPassword.charAt(0) === ".") {
+          passwordElement = await driver.findElement(
+            By.className(htmlSelectorPassword.substring(1))
+          );
         } else {
-          passwordElement = await driver.findElement(By.name(htmlSelectorPassword))
+          passwordElement = await driver.findElement(
+            By.name(htmlSelectorPassword)
+          );
         }
-        const actionsPassword = driver.actions({async: true});  
-        await actionsPassword.move({origin:passwordElement}).press().perform();
+        const actionsPassword = driver.actions({ async: true });
+        await actionsPassword
+          .move({ origin: passwordElement })
+          .press()
+          .perform();
         await driver.actions().sendKeys(password).perform();
 
         //  Cliquer sur le bouton pour s'authentifier
@@ -107,7 +134,7 @@ export default function handler(
         );
         const actions = driver.actions({ async: true });
         await actions.move({ origin: authenticateButton }).click().perform();
-        await driver.manage().setTimeouts( { implicit: 2000 } );
+        await driver.manage().setTimeouts({ implicit: 2000 });
         let thirdTestTextShownElements = await driver.findElements(
           By.xpath(`//*[text()[contains(.,'${thirdTestTextShown}')]]`)
         );

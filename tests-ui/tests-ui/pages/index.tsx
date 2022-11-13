@@ -25,7 +25,7 @@ import React from "react";
 import { isValidHttpUrl } from "../utils/helpers";
 import TestResults from "../components/TestResults";
 
-const DEFAULT_URL = "http://localhost:4200/login";
+const DEFAULT_URL = "http://localhost:4200";
 
 export default function Home() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -40,6 +40,7 @@ export default function Home() {
   const [htmlSelectorPassword, setHtmlSelectorPassword] = useState<string>("");
   const [identifier, setIdentifier] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [thirdTestLoginButton, setThirdTestLoginButton] = useState<string>("");
   const [thirdTestButtonName, setThirdTestButtonName] = useState<string>("");
   const [thirdTestTextShown, setThirdTestTextShown] = useState<string>("");
   const [testResults, setTestResults] = useState<TestResultsType>();
@@ -77,6 +78,7 @@ export default function Home() {
           password,
           thirdTestButtonName,
           thirdTestTextShown,
+          thirdTestLoginButton
         };
         const response = await fetch("/api/tests", {
           method: "POST",
@@ -229,6 +231,15 @@ export default function Home() {
               #submitButton). Vous pouvez aussi ne rien mettre au début du
               sélecteur pour faire la recherche avec l'attribut 'name'
             </Tag>
+            <FormControl>
+              <FormLabel>Texte du bouton de connexion pour redirection (Facultatif)</FormLabel>
+              <Input
+                borderColor={doThirdTest ? "blue.500" : "lightgray"}
+                isDisabled={!doThirdTest}
+                value={thirdTestLoginButton}
+                onChange={(e) => setThirdTestLoginButton(e.target.value)}
+              />
+            </FormControl>
             <HStack alignItems="end" marginRight="auto !important">
               <FormControl>
                 <FormLabel>Sélecteur HTML de l'identifiant</FormLabel>
