@@ -45,7 +45,7 @@ export const deployWikiJS = (dbInstance: gcp.sql.DatabaseInstance, db: gcp.sql.D
             spec: {
                 serviceAccountName: serviceAccount.email,
                 containers: [{
-                    image: pulumi.interpolate`${dockerRegistry.location}-docker.pkg.dev/euphoric-drive-365518/${dockerRegistry.name}/wikijs:latest`,
+                    image: pulumi.interpolate`${dockerRegistry.location}-docker.pkg.dev/euphoric-drive-365518/${dockerRegistry.name}/wikijs:2.5.291`,
                     ports: [{
                         containerPort: 3000
                     }],
