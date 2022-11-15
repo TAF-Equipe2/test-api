@@ -38,9 +38,10 @@ export default function handler(
   };
 
   (async function executeTests() {
+    const seleniumServer = process.env.SELENIUM_SERVER ?? "http://localhost:4444/wd/hub";
     const driver = await new Builder()
       .forBrowser("chrome")
-      .usingServer("http://localhost:4444/wd/hub")
+      .usingServer(seleniumServer)
       .build();
 
     try {
