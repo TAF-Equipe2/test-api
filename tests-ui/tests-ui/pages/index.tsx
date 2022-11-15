@@ -331,7 +331,16 @@ export default function Home() {
       </main>
 
       <footer className={styles.footer}>
-        <Text>Par l'équipe 1</Text>
+        <VStack>
+          <Text>Par l'équipe 1</Text>
+          <Text fontSize="sm" pl={5}>
+            Issam Igout <br />
+            Aimen Kellil <br />
+            Youssef Laarossi <br />
+            Mohamed Chraiet
+          </Text>
+        </VStack>
+
       </footer>
     </div>
   );
