@@ -66,6 +66,10 @@ const repo_front = new awsx.ecr.Repository("taf-front");
 const image_front = repo_front.buildAndPushImage("../../frontend");
 const repo_back = new awsx.ecr.Repository("taf-back");
 const image_back = repo_back.buildAndPushImage("../../backend");
+const repo_tests_ui = new awsx.ecr.Repository("tests-ui");
+const image_tests_ui = repo_tests_ui.buildAndPushImage("../../tests-ui/tests-ui");
+const repo_selenium = new awsx.ecr.Repository("selenium");
+const image_selenium = repo_selenium.buildAndPushImage("../../selenium");
 
 // Starting a new DB instance for the TAF Backend
 const DB_Username = config.require("TAF_DB_Username");
