@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Checkbox,
   FormControl,
@@ -118,6 +119,28 @@ export default function Home() {
       : +percentageValue.toFixed(1);
   };
 
+  const setScenario = (scenarioNumber: number) => {
+    console.log("---",DEFAULT_URL)
+    switch (scenarioNumber) {
+      case 1:
+        setUrl(DEFAULT_URL ?? "");
+        setDoFirstTest(true);
+        setFirstTestButtonText("Inscription");
+        setFirstTestTextShown("Nom Complet");
+        setDoSecondTest(true);
+        setH1Text("Bonjour!");
+        setDoThirdTest(true);
+        setThirdTestLoginButton("Connexion");
+        setHtmlSelectorIdentifier("username");
+        setIdentifier("mchraiet");
+        setHtmlSelectorPassword("password");
+        setThirdTestButtonName("Ouverture de Session");
+        setThirdTestTextShown("Connecté en tant que Mohamed");
+        break;
+      default:
+    }
+  };
+
   return (
     <div className={styles.container}>
       <Head>
@@ -125,210 +148,225 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        <Heading>Tests UI</Heading>
-
-        <Alert
-          onClose={onClose}
-          isOpen={isOpen}
-          cancelRef={cancelRef}
-          text={alertMessage}
-        />
-
-        <VStack my={10}>
-          <FormControl>
-            <FormLabel>URL</FormLabel>
-            <InputGroup>
-              <InputLeftAddon children="URL" />
-              <Input
-                borderColor="blue.500"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-              />
-            </InputGroup>
-            <FormHelperText>
-              Entrer l'URL du site web à tester (doit commencer par http:// ou
-              https://)
-            </FormHelperText>
-          </FormControl>
-
-          <VStack p="5" maxW="750px" borderWidth="2px" borderRadius={5}>
-            <Checkbox
-              isChecked={doFirstTest}
-              onChange={(e) => setDoFirstTest(e.target.checked)}
-              marginRight="auto"
-            >
-              <Heading as="h2" size="md" marginRight="auto !important">
-                Cas #1 <Tag colorScheme="blue">Navigation</Tag>
-              </Heading>
-            </Checkbox>
-            <Text>
-              Si l'utilisateur clique sur un bouton nommé{" "}
-              <Input
-                borderColor={doFirstTest ? "blue.500" : "lightgray"}
-                value={firstTestButtonText}
-                onChange={(e) => setFirstTestButtonText(e.target.value)}
-                isDisabled={!doFirstTest}
-              />
-              Alors dans la page du navigateur, ce texte sera affiché:{" "}
-              <Input
-                borderColor={doFirstTest ? "blue.500" : "lightgray"}
-                value={firstTestTextShown}
-                onChange={(e) => setFirstTestTextShown(e.target.value)}
-                isDisabled={!doFirstTest}
-              />
-            </Text>
-          </VStack>
-
-          <VStack
-            marginRight="auto !important"
-            p="5"
-            maxWidth="750px"
-            borderWidth="2px"
-            borderRadius={5}
-          >
-            <Checkbox
-              isChecked={doSecondTest}
-              onChange={(e) => setDoSecondTest(e.target.checked)}
-              marginRight="auto"
-            >
-              <Heading as="h2" size="md" marginRight="auto !important">
-                Cas #2 <Tag colorScheme="blue">Titre sur la page</Tag>
-              </Heading>
-            </Checkbox>
-            <Text>
-              Un élément de titre (H1 à H6) est présent dans la page et contient
-              le texte suivant:{" "}
-              <Input
-                borderColor={doSecondTest ? "blue.500" : "lightgray"}
-                value={h1Text}
-                onChange={(e) => {
-                  setH1Text(e.target.value);
-                }}
-                isDisabled={!doSecondTest}
-              />
-            </Text>
-          </VStack>
-
-          <VStack
-            marginRight="auto !important"
-            p="5"
-            borderWidth="2px"
-            maxWidth="750px"
-            borderRadius={5}
-          >
-            <Checkbox
-              isChecked={doThirdTest}
-              onChange={(e) => setDoThirdTest(e.target.checked)}
-              marginRight="auto"
-            >
-              <Heading as="h2" size="md" marginRight="auto !important">
-                Cas #3 <Tag colorScheme="blue">Authentification</Tag>
-              </Heading>
-            </Checkbox>
-            <Tag>
-              Un sélecteur HTML peut commencer par # ou . (Par exemple:
-              #submitButton). Vous pouvez aussi ne rien mettre au début du
-              sélecteur pour faire la recherche avec l'attribut 'name'
-            </Tag>
-            <FormControl>
-              <FormLabel>Texte du bouton de connexion pour redirection (Facultatif)</FormLabel>
-              <Input
-                borderColor={doThirdTest ? "blue.500" : "lightgray"}
-                isDisabled={!doThirdTest}
-                value={thirdTestLoginButton}
-                onChange={(e) => setThirdTestLoginButton(e.target.value)}
-              />
-            </FormControl>
-            <HStack alignItems="end" marginRight="auto !important">
-              <FormControl>
-                <FormLabel>Sélecteur HTML de l'identifiant</FormLabel>
-                <Input
-                  borderColor={doThirdTest ? "blue.500" : "lightgray"}
-                  isDisabled={!doThirdTest}
-                  value={htmlSelectorIdentifier}
-                  onChange={(e) => setHtmlSelectorIdentifier(e.target.value)}
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel>Identifiant</FormLabel>
-                <Input
-                  borderColor={doThirdTest ? "blue.500" : "lightgray"}
-                  isDisabled={!doThirdTest}
-                  value={identifier}
-                  onChange={(e) => setIdentifier(e.target.value)}
-                />
-              </FormControl>
-            </HStack>
-
-            <HStack alignItems="end" marginRight="auto !important">
-              <FormControl>
-                <FormLabel>Sélecteur HTML du mot de passe</FormLabel>
-                <Input
-                  borderColor={doThirdTest ? "blue.500" : "lightgray"}
-                  isDisabled={!doThirdTest}
-                  value={htmlSelectorPassword}
-                  onChange={(e) => setHtmlSelectorPassword(e.target.value)}
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel>Mot de passe</FormLabel>
-                <Input
-                  borderColor={doThirdTest ? "blue.500" : "lightgray"}
-                  isDisabled={!doThirdTest}
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </FormControl>
-            </HStack>
-            <VStack marginRight="auto !important">
-              <FormControl>
-                <FormLabel>Nom du bouton de connexion</FormLabel>
-                <Input
-                  borderColor={doThirdTest ? "blue.500" : "lightgray"}
-                  isDisabled={!doThirdTest}
-                  value={thirdTestButtonName}
-                  onChange={(e) => setThirdTestButtonName(e.target.value)}
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel>
-                  Texte affiché suite à l'authentification réussie
-                </FormLabel>
-                <Input
-                  borderColor={doThirdTest ? "blue.500" : "lightgray"}
-                  isDisabled={!doThirdTest}
-                  value={thirdTestTextShown}
-                  onChange={(e) => setThirdTestTextShown(e.target.value)}
-                />
-              </FormControl>
-            </VStack>
-          </VStack>
-
-          <Button
-            colorScheme="blue"
-            marginRight="auto !important"
-            onClick={onTest}
-            leftIcon={
-              isExecutingTests ? <Spinner /> : <BiTestTube color="white" />
-            }
-            disabled={isExecutingTests}
-          >
-            Exécuter les tests
-          </Button>
-
-          {testResults && (
-            <TestResults
-              doFirstTest={doFirstTest}
-              doSecondTest={doSecondTest}
-              doThirdTest={doThirdTest}
-              testResults={testResults}
-              getPercentageTestsSucceeded={getPercentageTestsSucceeded}
-            />
-          )}
+      <HStack>
+        <VStack marginBottom="60%">
+          <Box>
+            <Button colorScheme="blue" onClick={() => setScenario(1)}>Scénario #1 <Tag size="sm" ml={2}>TAF</Tag></Button>
+          </Box>
+            <Box>
+                <Button colorScheme="blue">Scénario #2 </Button>
+            </Box>
+            <Box>
+                <Button colorScheme="blue">Scénario #3 </Button>
+            </Box>
         </VStack>
-      </main>
+
+        <main className={styles.main}>
+          <Heading>Tests UI</Heading>
+
+          <Alert
+              onClose={onClose}
+              isOpen={isOpen}
+              cancelRef={cancelRef}
+              text={alertMessage}
+          />
+
+          <VStack my={10}>
+            <FormControl>
+              <FormLabel>URL</FormLabel>
+              <InputGroup>
+                <InputLeftAddon children="URL" />
+                <Input
+                    borderColor="blue.500"
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                />
+              </InputGroup>
+              <FormHelperText>
+                Entrer l'URL du site web à tester (doit commencer par http:// ou
+                https://)
+              </FormHelperText>
+            </FormControl>
+
+            <VStack p="5" maxW="750px" borderWidth="2px" borderRadius={5}>
+              <Checkbox
+                  isChecked={doFirstTest}
+                  onChange={(e) => setDoFirstTest(e.target.checked)}
+                  marginRight="auto"
+              >
+                <Heading as="h2" size="md" marginRight="auto !important">
+                  Cas #1 <Tag colorScheme="blue">Navigation</Tag>
+                </Heading>
+              </Checkbox>
+              <Text>
+                Si l'utilisateur clique sur un bouton nommé{" "}
+                <Input
+                    borderColor={doFirstTest ? "blue.500" : "lightgray"}
+                    value={firstTestButtonText}
+                    onChange={(e) => setFirstTestButtonText(e.target.value)}
+                    isDisabled={!doFirstTest}
+                />
+                Alors dans la page du navigateur, ce texte sera affiché:{" "}
+                <Input
+                    borderColor={doFirstTest ? "blue.500" : "lightgray"}
+                    value={firstTestTextShown}
+                    onChange={(e) => setFirstTestTextShown(e.target.value)}
+                    isDisabled={!doFirstTest}
+                />
+              </Text>
+            </VStack>
+
+            <VStack
+                marginRight="auto !important"
+                p="5"
+                maxWidth="750px"
+                borderWidth="2px"
+                borderRadius={5}
+            >
+              <Checkbox
+                  isChecked={doSecondTest}
+                  onChange={(e) => setDoSecondTest(e.target.checked)}
+                  marginRight="auto"
+              >
+                <Heading as="h2" size="md" marginRight="auto !important">
+                  Cas #2 <Tag colorScheme="blue">Titre sur la page</Tag>
+                </Heading>
+              </Checkbox>
+              <Text>
+                Un élément de titre (H1 à H6) est présent dans la page et contient
+                le texte suivant:{" "}
+                <Input
+                    borderColor={doSecondTest ? "blue.500" : "lightgray"}
+                    value={h1Text}
+                    onChange={(e) => {
+                      setH1Text(e.target.value);
+                    }}
+                    isDisabled={!doSecondTest}
+                />
+              </Text>
+            </VStack>
+
+            <VStack
+                marginRight="auto !important"
+                p="5"
+                borderWidth="2px"
+                maxWidth="750px"
+                borderRadius={5}
+            >
+              <Checkbox
+                  isChecked={doThirdTest}
+                  onChange={(e) => setDoThirdTest(e.target.checked)}
+                  marginRight="auto"
+              >
+                <Heading as="h2" size="md" marginRight="auto !important">
+                  Cas #3 <Tag colorScheme="blue">Authentification</Tag>
+                </Heading>
+              </Checkbox>
+              <Tag>
+                Un sélecteur HTML peut commencer par # ou . (Par exemple:
+                #submitButton). Vous pouvez aussi ne rien mettre au début du
+                sélecteur pour faire la recherche avec l'attribut 'name'
+              </Tag>
+              <FormControl>
+                <FormLabel>Texte du bouton de connexion pour redirection (Facultatif)</FormLabel>
+                <Input
+                    borderColor={doThirdTest ? "blue.500" : "lightgray"}
+                    isDisabled={!doThirdTest}
+                    value={thirdTestLoginButton}
+                    onChange={(e) => setThirdTestLoginButton(e.target.value)}
+                />
+              </FormControl>
+              <HStack alignItems="end" marginRight="auto !important">
+                <FormControl>
+                  <FormLabel>Sélecteur HTML de l'identifiant</FormLabel>
+                  <Input
+                      borderColor={doThirdTest ? "blue.500" : "lightgray"}
+                      isDisabled={!doThirdTest}
+                      value={htmlSelectorIdentifier}
+                      onChange={(e) => setHtmlSelectorIdentifier(e.target.value)}
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Identifiant</FormLabel>
+                  <Input
+                      borderColor={doThirdTest ? "blue.500" : "lightgray"}
+                      isDisabled={!doThirdTest}
+                      value={identifier}
+                      onChange={(e) => setIdentifier(e.target.value)}
+                  />
+                </FormControl>
+              </HStack>
+
+              <HStack alignItems="end" marginRight="auto !important">
+                <FormControl>
+                  <FormLabel>Sélecteur HTML du mot de passe</FormLabel>
+                  <Input
+                      borderColor={doThirdTest ? "blue.500" : "lightgray"}
+                      isDisabled={!doThirdTest}
+                      value={htmlSelectorPassword}
+                      onChange={(e) => setHtmlSelectorPassword(e.target.value)}
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Mot de passe</FormLabel>
+                  <Input
+                      borderColor={doThirdTest ? "blue.500" : "lightgray"}
+                      isDisabled={!doThirdTest}
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                  />
+                </FormControl>
+              </HStack>
+              <VStack marginRight="auto !important">
+                <FormControl>
+                  <FormLabel>Nom du bouton de connexion</FormLabel>
+                  <Input
+                      borderColor={doThirdTest ? "blue.500" : "lightgray"}
+                      isDisabled={!doThirdTest}
+                      value={thirdTestButtonName}
+                      onChange={(e) => setThirdTestButtonName(e.target.value)}
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>
+                    Texte affiché suite à l'authentification réussie
+                  </FormLabel>
+                  <Input
+                      borderColor={doThirdTest ? "blue.500" : "lightgray"}
+                      isDisabled={!doThirdTest}
+                      value={thirdTestTextShown}
+                      onChange={(e) => setThirdTestTextShown(e.target.value)}
+                  />
+                </FormControl>
+              </VStack>
+            </VStack>
+
+            <Button
+                colorScheme="blue"
+                marginRight="auto !important"
+                onClick={onTest}
+                leftIcon={
+                  isExecutingTests ? <Spinner /> : <BiTestTube color="white" />
+                }
+                disabled={isExecutingTests}
+            >
+              Exécuter les tests
+            </Button>
+
+            {testResults && (
+                <TestResults
+                    doFirstTest={doFirstTest}
+                    doSecondTest={doSecondTest}
+                    doThirdTest={doThirdTest}
+                    testResults={testResults}
+                    getPercentageTestsSucceeded={getPercentageTestsSucceeded}
+                />
+            )}
+          </VStack>
+        </main>
+      </HStack>
+
 
       <footer className={styles.footer}>
         <VStack>
