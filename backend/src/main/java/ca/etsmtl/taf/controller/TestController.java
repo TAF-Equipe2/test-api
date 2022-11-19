@@ -15,6 +15,10 @@ public class TestController {
     return "Bienvenue au TAF.";
   }
 
+  @GetMapping("/ronin")
+  public String testApi() {
+    return "Bienvenue au TAF.";
+  }
   @GetMapping("/user")
   @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
   public String userAccess() {
