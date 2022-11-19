@@ -20,13 +20,16 @@ import Head from "next/head";
 import { useState } from "react";
 import styles from "../styles/Home.module.css";
 import { TestResults as TestResultsType } from "./api/tests";
-import { BiTestTube } from "react-icons/bi";
+import {BiReset, BiTestTube} from "react-icons/bi";
 import Alert from "../components/Alert";
 import React from "react";
 import { isValidHttpUrl } from "../utils/helpers";
 import TestResults from "../components/TestResults";
+import {ArrowLeftIcon} from "@chakra-ui/icons";
 
 const DEFAULT_URL = process.env.NEXT_PUBLIC_TAF_URL;
+
+type Scenario = 'taf' | 'acadarc';
 
 export default function Home() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -49,6 +52,7 @@ export default function Home() {
   const [doFirstTest, setDoFirstTest] = useState<boolean>(false);
   const [doSecondTest, setDoSecondTest] = useState<boolean>(false);
   const [doThirdTest, setDoThirdTest] = useState<boolean>(false);
+  const [activeScenario, setActiveScenario] = useState<Scenario>();
 
   const onTest = () => {
     if (url === "") {
@@ -119,15 +123,16 @@ export default function Home() {
       : +percentageValue.toFixed(1);
   };
 
-  const setScenario = (scenarioNumber: number) => {
-    console.log("---",DEFAULT_URL)
-    switch (scenarioNumber) {
-      case 1:
+  const setScenario = (scenario: Scenario) => {
+    reset();
+    setDoFirstTest(true);
+    setDoSecondTest(true);
+    setActiveScenario(scenario);
+    switch (scenario) {
+      case 'taf':
         setUrl(DEFAULT_URL ?? "");
-        setDoFirstTest(true);
         setFirstTestButtonText("Inscription");
         setFirstTestTextShown("Nom Complet");
-        setDoSecondTest(true);
         setH1Text("Bonjour!");
         setDoThirdTest(true);
         setThirdTestLoginButton("Connexion");
@@ -137,8 +142,31 @@ export default function Home() {
         setThirdTestButtonName("Ouverture de Session");
         setThirdTestTextShown("Connecté en tant que Mohamed");
         break;
-      default:
+      case 'acadarc':
+        setUrl('https://acadarc.org/fr/');
+        setFirstTestButtonText('Notre équipe');
+        setFirstTestTextShown('Alain April, ing., PhD');
+        setH1Text('Projet Ngimbi');
+        break;
     }
+  };
+
+  const reset = () => {
+    setActiveScenario(undefined);
+    setUrl('');
+    setFirstTestButtonText("");
+    setFirstTestTextShown("");
+    setH1Text("");
+    setThirdTestLoginButton("");
+    setHtmlSelectorIdentifier("");
+    setIdentifier("");
+    setPassword('');
+    setHtmlSelectorPassword("");
+    setThirdTestButtonName("");
+    setThirdTestTextShown("");
+    setDoFirstTest(false);
+    setDoSecondTest(false);
+    setDoThirdTest(false);
   };
 
   return (
@@ -151,13 +179,19 @@ export default function Home() {
       <HStack>
         <VStack marginBottom="60%">
           <Box>
-            <Button colorScheme="blue" onClick={() => setScenario(1)}>Scénario #1 <Tag size="sm" ml={2}>TAF</Tag></Button>
+            <HStack>
+              <Button colorScheme="blue" onClick={() => setScenario('taf')}>Scénario #1 <Tag size="sm" ml={2}>TAF</Tag></Button>
+              {activeScenario === 'taf' && <ArrowLeftIcon color="blue.500"/>}
+            </HStack>
           </Box>
             <Box>
-                <Button colorScheme="blue">Scénario #2 </Button>
+              <HStack>
+                <Button colorScheme="blue" onClick={() => setScenario('acadarc')}>Scénario #2 <Tag size="sm" ml={2}>ACADARC</Tag></Button>
+                {activeScenario === 'acadarc' && <ArrowLeftIcon color="blue.500"/>}
+              </HStack>
             </Box>
             <Box>
-                <Button colorScheme="blue">Scénario #3 </Button>
+              <Button colorScheme="blue" leftIcon={<BiReset />} onClick={reset}>Réinitialiser</Button>
             </Box>
         </VStack>
 
