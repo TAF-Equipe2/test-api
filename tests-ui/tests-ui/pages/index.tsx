@@ -29,7 +29,7 @@ import {ArrowLeftIcon} from "@chakra-ui/icons";
 
 const DEFAULT_URL = process.env.NEXT_PUBLIC_TAF_URL;
 
-type Scenario = 'taf' | 'acadarc';
+type Scenario = 'taf' | 'acadarc' | 'cegepgranby';
 
 export default function Home() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -148,6 +148,19 @@ export default function Home() {
         setFirstTestTextShown('Alain April, ing., PhD');
         setH1Text('Projet Ngimbi');
         break;
+      case 'cegepgranby':
+        setUrl('https://cegepgranby.omnivox.ca/Login/Account/Login');
+        setFirstTestButtonText("Oublié votre mot de passe?");
+        setFirstTestTextShown("Afin de vous identifier");
+        setH1Text("Omnivox");
+        setDoThirdTest(true);
+        setThirdTestLoginButton("Connexion");
+        setHtmlSelectorIdentifier("#Identifiant");
+        setIdentifier("1234121");
+        setHtmlSelectorPassword("#Password");
+        setThirdTestButtonName("Connexion");
+        setThirdTestTextShown("Mohamed Chraiet");
+        break;
     }
   };
 
@@ -190,6 +203,12 @@ export default function Home() {
                 {activeScenario === 'acadarc' && <ArrowLeftIcon color="blue.500"/>}
               </HStack>
             </Box>
+          <Box>
+            <HStack>
+              <Button colorScheme="blue" onClick={() => setScenario('cegepgranby')}>Scénario #3 <Tag size="sm" ml={2}>Cégep de Granby</Tag></Button>
+              {activeScenario === 'cegepgranby' && <ArrowLeftIcon color="blue.500"/>}
+            </HStack>
+          </Box>
             <Box>
               <Button colorScheme="blue" leftIcon={<BiReset />} onClick={reset}>Réinitialiser</Button>
             </Box>
