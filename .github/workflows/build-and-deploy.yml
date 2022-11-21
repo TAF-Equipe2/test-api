@@ -48,10 +48,6 @@ jobs:
     if: (needs.check-changes.outputs.backend == 'true' || needs.check-changes.outputs.frontend == 'true' && needs.check-changes.outputs.aws-eks == 'true')
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v3
-        with:
-          name: backend-jar
-          path: backend/target/backend-1.0.0-SNAPSHOT.jar
       - uses: actions/setup-node@v2
         with:
           node-version: 16.x
