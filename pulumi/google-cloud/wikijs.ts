@@ -1,5 +1,7 @@
 import * as gcp from '@pulumi/gcp';
+import * as docker from '@pulumi/docker';
 import * as pulumi from '@pulumi/pulumi';
+import * as path from 'path';
 import { cloudRunService, iamService } from './apis';
 import { dockerRegistry } from './registry';
 
@@ -24,6 +26,13 @@ export const deployWikiJS = (dbInstance: gcp.sql.DatabaseInstance, db: gcp.sql.D
             pulumi.interpolate`serviceAccount:${serviceAccount.email}`
         ]
     });
+
+    const dockerImage = new docker.Image('vault-image', {
+        imageName: pulumi.interpolate`${dockerRegistry.location}-docker.pkg.dev/euphoric-drive-365518/${dockerRegistry.name}/wikijs:latest`,
+        build: {
+            context: path.resolve(process.cwd(), 'wikijs')
+        }
+    });
     
 
     const appService = new gcp.cloudrun.Service('wikijs', {
@@ -45,7 +54,7 @@ export const deployWikiJS = (dbInstance: gcp.sql.DatabaseInstance, db: gcp.sql.D
             spec: {
                 serviceAccountName: serviceAccount.email,
                 containers: [{
-                    image: pulumi.interpolate`${dockerRegistry.location}-docker.pkg.dev/euphoric-drive-365518/${dockerRegistry.name}/wikijs:2.5.291`,
+                    image: dockerImage.imageName,
                     ports: [{
                         containerPort: 3000
                     }],
