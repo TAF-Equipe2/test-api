@@ -6,6 +6,7 @@ import { cloudRunService, iamService } from './apis';
 import { dockerRegistry } from './registry';
 
 const cfg = new pulumi.Config();
+const project = cfg.require('gcp-project');
 
 export const deployWikiJS = (dbInstance: gcp.sql.DatabaseInstance, db: gcp.sql.Database, dbUser: gcp.sql.User) => {
 
@@ -16,11 +17,11 @@ export const deployWikiJS = (dbInstance: gcp.sql.DatabaseInstance, db: gcp.sql.D
     const serviceAccountPermission = new gcp.projects.IAMBinding('wikijs-service-user-iam', {
         members: [pulumi.interpolate`serviceAccount:${serviceAccount.email}`],
         role: 'roles/iam.serviceAccountUser',
-        project: 'euphoric-drive-365518'
+        project: project
     });
 
     const accessToCloudSQL = new gcp.projects.IAMBinding('wikijs-service-sql-access', {
-        project: 'euphoric-drive-365518',
+        project: project,
         role: 'roles/cloudsql.client',
         members: [
             pulumi.interpolate`serviceAccount:${serviceAccount.email}`
@@ -28,7 +29,7 @@ export const deployWikiJS = (dbInstance: gcp.sql.DatabaseInstance, db: gcp.sql.D
     });
 
     const dockerImage = new docker.Image('vault-image', {
-        imageName: pulumi.interpolate`${dockerRegistry.location}-docker.pkg.dev/euphoric-drive-365518/${dockerRegistry.name}/wikijs:latest`,
+        imageName: pulumi.interpolate`${dockerRegistry.location}-docker.pkg.dev/${project}/${dockerRegistry.name}/wikijs:latest`,
         build: {
             context: path.resolve(process.cwd(), 'wikijs')
         }
