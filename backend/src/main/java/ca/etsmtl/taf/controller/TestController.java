@@ -1,10 +1,11 @@
 package ca.etsmtl.taf.controller;
 
+import ca.etsmtl.taf.payload.request.SignupRequest;
+import ca.etsmtl.taf.payload.request.TestApiRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController

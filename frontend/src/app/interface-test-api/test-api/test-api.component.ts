@@ -21,28 +21,28 @@ export class TestApiComponent implements OnInit {
     { id: "delete", name: 'Delete' },
     { id: "update", name: 'Update' },
     { id: "options", name: 'Options' },
-    
+
   ];
 
   constructor(
-    private testApiService:TestApiService 
+    private testApiService:TestApiService
   ) { }
 
   ngOnInit() {
   }
-  
+
 
   onSubmit(): void {
     const { method, apiUrl, input, exceptedOutput } = this.form;
 
     this.testApiService.execute(method, apiUrl, input, exceptedOutput).subscribe({
       next: data => {
-      
+        console.log(data);
       },
       error: err => {
-       
+        console.log(err);
       }
     });
-   
+
   }
 }

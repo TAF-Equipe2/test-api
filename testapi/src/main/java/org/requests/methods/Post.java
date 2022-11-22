@@ -1,5 +1,8 @@
 package org.requests.methods;
 
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.Test;
 import org.requests.IRequest;
 
@@ -21,6 +24,17 @@ public class Post implements IRequest {
     @Test
     @Override
     public void execute(){
+        RestAssured.baseURI = "https://reqres.in/";
 
+        String payload = "{\n" +
+                "    \"email\": \"eve.holt@reqres.in\",\n" +
+                "    \"password\": \"pistol\"\n" +
+                "}";
+        RequestSpecification httpRequest = given();
+        Response response = httpRequest.body(payload).post("api/register");
+        IRequest.super.getResponse(response);
     }
+
+
+   
 }
