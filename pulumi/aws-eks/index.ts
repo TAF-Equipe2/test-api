@@ -3,6 +3,8 @@ import * as awsx from "@pulumi/awsx";
 import * as eks from "@pulumi/eks";
 import * as aws from "@pulumi/aws";
 import * as k8s from "@pulumi/kubernetes"
+import { readK8sDefinition } from "./utils/k8s-definitions";
+import * as path from "path";
 
 // Grab some values from the Pulumi configuration (or use default values)
 const config = new pulumi.Config();
@@ -65,7 +67,10 @@ export const vpcId = eksVpc.id;
 const repo_front = new awsx.ecr.Repository("taf-front");
 const image_front = repo_front.buildAndPushImage("../../frontend");
 const repo_back = new awsx.ecr.Repository("taf-back");
-const image_back = repo_back.buildAndPushImage("../../backend");
+const image_back = repo_back.buildAndPushImage({
+    dockerfile: path.resolve(process.cwd(), '../..', 'backend/Dockerfile'),
+    context: path.resolve(process.cwd(), '../..')
+});
 const repo_tests_ui = new awsx.ecr.Repository("tests-ui");
 const image_tests_ui = repo_tests_ui.buildAndPushImage("../../tests-ui/tests-ui");
 const repo_selenium = new awsx.ecr.Repository("selenium");
@@ -90,18 +95,36 @@ const DB_TAF_Backend = new aws.rds.Instance("db-taf-backend", {
 export const DB_Address = DB_TAF_Backend.address
 
 // Namespace to isolate resources used for TAF
-const ns = new k8s.core.v1.Namespace("taf", {}, {provider: eksCluster.provider})
-export const TAFNamespaceName = ns.metadata.name;
+const nsDefinition = readK8sDefinition('Namespace.yml');
+const ns = new k8s.core.v1.Namespace("taf", nsDefinition, {provider: eksCluster.provider});
 
 // Deploying TAF Backend
+const backendSecretDefinition = readK8sDefinition('taf/backend/Secret.yml');
+backendSecretDefinition.stringData.username = DB_Username;
+backendSecretDefinition.stringData.password = pulumi.interpolate`${DB_Password}`;
+const backendSecret = new k8s.core.v1.Secret('taf-backend-secret', backendSecretDefinition, { provider: eksCluster.provider, dependsOn: [ns] });
 
-const secret_db_config = new k8s.core.v1.Secret("db-taf-secret", {
-    stringData: {
-        "username": `${DB_Username}`,
-        "password": pulumi.interpolate`${DB_Password}`,
-    }
-}, {provider: eksCluster.provider})
+const backendDeploymentDefinition = readK8sDefinition('taf/backend/Deployment.yml');
+backendDeploymentDefinition.spec.template.spec.containers[0].image = image_back;
+backendDeploymentDefinition.spec.template.spec.containers[0].env[0].value = DB_Address;
+const backendDeployment = new k8s.apps.v1.Deployment('taf-backend-deployment', backendDeploymentDefinition, {provider: eksCluster.provider, dependsOn: [backendSecret]});
 
+const backendServiceDefinition = readK8sDefinition('taf/backend/Service.yml');
+const backendService = new k8s.core.v1.Service('taf-backend-service', backendServiceDefinition, {provider: eksCluster.provider, dependsOn: [backendDeployment]});
+
+// Export the URL for the load balanced service.
+export const back_url = backendService.status.loadBalancer.ingress[0].hostname;
+
+// Deploying TAF Frontend
+const frontendDeploymentDefinition = readK8sDefinition('taf/frontend/Deployment.yml');
+frontendDeploymentDefinition.spec.template.spec.containers[0].image = image_front;
+const frontendDeployment = new k8s.apps.v1.Deployment('taf-frontend-deployment', frontendDeploymentDefinition, { provider: eksCluster.provider, dependsOn: [ns] });
+
+const frontendServiceDefinition = readK8sDefinition('taf/frontend/Service.yml');
+const frontendService = new k8s.core.v1.Service('taf-frontend-service', frontendServiceDefinition, { provider: eksCluster.provider, dependsOn: [frontendDeployment] });
+
+// Export the URL for the load balanced service.
+export const front_url = frontendService.status.loadBalancer.ingress[0].hostname;
 
 /*
 const appBackendName = "taf-backend";

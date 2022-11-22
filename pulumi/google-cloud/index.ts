@@ -1,3 +1,4 @@
+import './apis';
 import { database, dbInstance, dbUser } from './database';
 import { deployWikiJS } from './wikijs';
 

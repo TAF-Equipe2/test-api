@@ -1,9 +1,12 @@
 import * as gcp from '@pulumi/gcp';
+import * as docker from '@pulumi/docker';
 import * as pulumi from '@pulumi/pulumi';
+import * as path from 'path';
 import { cloudRunService, iamService } from './apis';
 import { dockerRegistry } from './registry';
 
 const cfg = new pulumi.Config();
+const project = cfg.require('gcp-project');
 
 export const deployWikiJS = (dbInstance: gcp.sql.DatabaseInstance, db: gcp.sql.Database, dbUser: gcp.sql.User) => {
 
@@ -14,15 +17,22 @@ export const deployWikiJS = (dbInstance: gcp.sql.DatabaseInstance, db: gcp.sql.D
     const serviceAccountPermission = new gcp.projects.IAMBinding('wikijs-service-user-iam', {
         members: [pulumi.interpolate`serviceAccount:${serviceAccount.email}`],
         role: 'roles/iam.serviceAccountUser',
-        project: 'euphoric-drive-365518'
+        project: project
     });
 
     const accessToCloudSQL = new gcp.projects.IAMBinding('wikijs-service-sql-access', {
-        project: 'euphoric-drive-365518',
+        project: project,
         role: 'roles/cloudsql.client',
         members: [
             pulumi.interpolate`serviceAccount:${serviceAccount.email}`
         ]
+    });
+
+    const dockerImage = new docker.Image('vault-image', {
+        imageName: pulumi.interpolate`${dockerRegistry.location}-docker.pkg.dev/${project}/${dockerRegistry.name}/wikijs:latest`,
+        build: {
+            context: path.resolve(process.cwd(), 'wikijs')
+        }
     });
     
 
@@ -45,7 +55,7 @@ export const deployWikiJS = (dbInstance: gcp.sql.DatabaseInstance, db: gcp.sql.D
             spec: {
                 serviceAccountName: serviceAccount.email,
                 containers: [{
-                    image: pulumi.interpolate`${dockerRegistry.location}-docker.pkg.dev/euphoric-drive-365518/${dockerRegistry.name}/wikijs:2.5.291`,
+                    image: dockerImage.imageName,
                     ports: [{
                         containerPort: 3000
                     }],
