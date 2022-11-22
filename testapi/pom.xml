@@ -18,8 +18,8 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- The main class to start by executing "java -jar" -->
-        <start-class>org.requests.TestManager</start-class>
+            <!-- The main class to start by executing "java -jar" -->
+            <start-class>org.requests.TestManager</start-class>
     </properties>
 
     <dependencies>
