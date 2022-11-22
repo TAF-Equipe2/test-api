@@ -4,16 +4,9 @@ import io.restassured.http.Headers;
 import io.restassured.response.Response;
 import io.restassured.response.ResponseBody;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
-@RestController
+
 public interface IRequest {
-
-    public super apiUrl;
-
 
     void execute();
 
@@ -28,9 +21,6 @@ public interface IRequest {
         System.out.println("Body ets " + body.prettyPrint());
     }
 
-    @RequestMapping("/test/api/ronin")
-    public default void testToReceiveData(){
-        System.out.println("Test");
-    }
+
 
 }
