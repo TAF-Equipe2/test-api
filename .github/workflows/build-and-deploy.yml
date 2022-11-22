@@ -84,7 +84,8 @@ jobs:
         uses: 'google-github-actions/auth@v0'
         with:
           credentials_json: '${{ secrets.GCP_GITHUB_SA_KEY }}'
-      - uses: pulumi/actions@v3
+      - id: pulumi
+        uses: pulumi/actions@v3
         with:
           command: up
           stack-name: mgl805/google-cloud/dev

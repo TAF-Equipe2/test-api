@@ -115,6 +115,16 @@ const backendService = new k8s.core.v1.Service('taf-backend-service', backendSer
 // Export the URL for the load balanced service.
 export const back_url = backendService.status.loadBalancer.ingress[0].hostname;
 
+// Deploying TAF Frontend
+const frontendDeploymentDefinition = readK8sDefinition('taf/frontend/Deployment.yml');
+frontendDeploymentDefinition.spec.template.spec.containers[0].image = image_front;
+const frontendDeployment = new k8s.apps.v1.Deployment('taf-frontend-deployment', frontendDeploymentDefinition, { provider: eksCluster.provider, dependsOn: [ns] });
+
+const frontendServiceDefinition = readK8sDefinition('taf/frontend/Service.yml');
+const frontendService = new k8s.core.v1.Service('taf-frontend-service', frontendServiceDefinition, { provider: eksCluster.provider, dependsOn: [frontendDeployment] });
+
+// Export the URL for the load balanced service.
+export const front_url = frontendService.status.loadBalancer.ingress[0].hostname;
 
 /*
 const appBackendName = "taf-backend";
