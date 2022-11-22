@@ -3,14 +3,11 @@ package org.requests;
 import io.restassured.http.Headers;
 import io.restassured.response.Response;
 import io.restassured.response.ResponseBody;
-import org.junit.jupiter.api.Test;
 
 
 public interface IRequest {
 
     void execute();
-
-    @Test
     public default void getResponse(Response response) {
         int statusCode = response.getStatusCode();
         Headers header = response.getHeaders();

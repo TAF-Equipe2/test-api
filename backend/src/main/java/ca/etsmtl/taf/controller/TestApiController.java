@@ -19,14 +19,12 @@ public class TestApiController {
     public void testApi(@Valid @RequestBody TestApiRequest testApiRequest) throws URISyntaxException, IOException, InterruptedException {
 
         var client = HttpClient.newHttpClient();
-        var uri = new URI("http://localhost:8080/api/microservice/checkApi");
+        var uri = new URI("http://localhost:8082/api/microservice/checkApi");
 
         var request = HttpRequest.newBuilder(uri).
                 POST(BodyPublishers.ofString(testApiRequest.toString()))
                 .header("Content-type", "application/json").
                 build();
-        var response = client.send(request, BodyHandlers.discarding());
-System.out.println(response);
         //Later add return info from microservice testapi
     }
 }

@@ -23,4 +23,3 @@ taf:
   app:
     jwtSecret: bezKoderSecretKey
     jwtExpirationMs: 86400000
-  

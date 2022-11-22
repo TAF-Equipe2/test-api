@@ -12,9 +12,9 @@ import javax.validation.Valid;
 public class TestApiController {
 
     @PostMapping("/checkApi")
-    public String testApi(@Valid @RequestBody TestApiRequest testApiRequest) {
-        System.out.println(testApiRequest.apiUrl);
-        return testApiRequest.apiUrl;
+    public void testApi(@Valid @RequestBody TestApiRequest testApiRequest) {
+
+        System.out.println(testApiRequest);
         //Later add return info
     }
 }
