@@ -28,8 +28,8 @@ export const deployWikiJS = (dbInstance: gcp.sql.DatabaseInstance, db: gcp.sql.D
         ]
     });
 
-    const dockerImage = new docker.Image('vault-image', {
-        imageName: pulumi.interpolate`${dockerRegistry.location}-docker.pkg.dev/${project}/${dockerRegistry.name}/wikijs:latest`,
+    const dockerImage = new docker.Image('wikijs-image', {
+        imageName: pulumi.interpolate`${dockerRegistry.location}-docker.pkg.dev/${project}/${dockerRegistry.name}/wikijs`,
         build: {
             context: path.resolve(process.cwd(), 'wikijs')
         }
