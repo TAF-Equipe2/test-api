@@ -32,6 +32,7 @@ const DB_TAF_Backend = new aws.rds.Instance("db-taf-backend", {
     username: `${DB_Username}`,
     password: pulumi.interpolate`${DB_Password}`,
     skipFinalSnapshot: true,
+    allowMajorVersionUpgrade: true,
 });
 
 export const DB_Address = DB_TAF_Backend.endpoint;
