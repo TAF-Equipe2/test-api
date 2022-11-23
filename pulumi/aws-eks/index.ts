@@ -92,7 +92,7 @@ const DB_TAF_Backend = new aws.rds.Instance("db-taf-backend", {
     skipFinalSnapshot: true,
 });
 
-export const DB_Address = DB_TAF_Backend.address
+export const DB_Address = DB_TAF_Backend.endpoint;
 
 // Namespace to isolate resources used for TAF
 const nsDefinition = readK8sDefinition('Namespace.yml');
@@ -106,7 +106,7 @@ const backendSecret = new k8s.core.v1.Secret('taf-backend-secret', backendSecret
 
 const backendDeploymentDefinition = readK8sDefinition('taf/backend/Deployment.yml');
 backendDeploymentDefinition.spec.template.spec.containers[0].image = image_back;
-backendDeploymentDefinition.spec.template.spec.containers[0].env[0].value = DB_Address;
+backendDeploymentDefinition.spec.template.spec.containers[0].env[0].value = `jdbc:mysql://${DB_Address}/${DB_TAF_Backend.dbName}`;
 const backendDeployment = new k8s.apps.v1.Deployment('taf-backend-deployment', backendDeploymentDefinition, {provider: eksCluster.provider, dependsOn: [backendSecret]});
 
 const backendServiceDefinition = readK8sDefinition('taf/backend/Service.yml');
