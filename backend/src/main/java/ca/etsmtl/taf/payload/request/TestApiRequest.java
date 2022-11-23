@@ -5,12 +5,9 @@ import javax.validation.constraints.NotBlank;
 public class TestApiRequest {
 
 
-    private String apiUrl;
-
-    private String method;
-
-    private String exceptedOutput;
-
-    private String input;
+    public String apiUrl;
+    public String exceptedOutput;
+    public String input;
+    public String method;
 
 }

@@ -5,7 +5,7 @@ import org.requests.IRequest;
 public class Get implements IRequest {
 
     @Override
-    public void execute() {
+    public void execute(String url, String input, String output) {
 
 
     }
