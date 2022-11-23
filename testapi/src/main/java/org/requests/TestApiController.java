@@ -13,8 +13,6 @@ public class TestApiController {
 
     @PostMapping("/checkApi")
     public void testApi(@Valid @RequestBody TestApiRequest testApiRequest) {
-
-        System.out.println(testApiRequest);
         //Later add return info
     }
 }

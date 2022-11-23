@@ -1,11 +1,15 @@
 package org.requests.payload.request;
 
-public class TestApiRequest {
+import javax.validation.constraints.NotBlank;
 
+public class TestApiRequest {
+    @NotBlank
     private String apiUrl;
+    @NotBlank
     private String method;
     private String exceptedOutput;
     private String input;
+
 
     public String getApiUrl() { return apiUrl; }
     public void setApiUrl(String apiUrl) { this.apiUrl = apiUrl; }
