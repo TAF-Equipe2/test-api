@@ -1,6 +1,5 @@
 package org.requests.methods;
 
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.requests.IRequest;
@@ -20,15 +19,11 @@ public class Post implements IRequest {
                 .then().log().body();
     }
     @Override
-    public void execute(){
-        RestAssured.baseURI = "https://reqres.in/";
+    public void execute(String url, String input, String output){
 
-        String payload = "{\n" +
-                "    \"email\": \"eve.holt@reqres.in\",\n" +
-                "    \"password\": \"pistol\"\n" +
-                "}";
         RequestSpecification httpRequest = given();
-        Response response = httpRequest.body(payload).post("api/register");
+        Response response = httpRequest.body(input).post(url);
+
         IRequest.super.getResponse(response);
     }
 

@@ -5,7 +5,7 @@ import org.requests.IRequest;
 public class Delete implements IRequest {
 
     @Override
-    public void execute() {
+    public void execute(String url, String input, String output) {
 
     }
 }
