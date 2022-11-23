@@ -28,14 +28,6 @@ export const deployWikiJS = (dbInstance: gcp.sql.DatabaseInstance, db: gcp.sql.D
         ]
     });
 
-    const dockerImage = new docker.Image('wikijs-image', {
-        imageName: pulumi.interpolate`${dockerRegistry.location}-docker.pkg.dev/${project}/${dockerRegistry.name}/wiki`,
-        build: {
-            context: path.resolve(process.cwd(), 'wikijs')
-        }
-    });
-    
-
     const appService = new gcp.cloudrun.Service('wikijs', {
         location: 'europe-west1',
 
@@ -55,7 +47,7 @@ export const deployWikiJS = (dbInstance: gcp.sql.DatabaseInstance, db: gcp.sql.D
             spec: {
                 serviceAccountName: serviceAccount.email,
                 containers: [{
-                    image: dockerImage.imageName,
+                    image: pulumi.interpolate`${dockerRegistry.location}-docker.pkg.dev/${project}/${dockerRegistry.name}/wikijs:2.5.292`,
                     ports: [{
                         containerPort: 3000
                     }],
