@@ -53,3 +53,5 @@ Il suffit de faire un commit et un push sur la branche *develop*.
 Une fois que le push est réalisé, il est possible de suivre l'avancement en se rendant sur le dépôt GitHub dans l'onglet Actions. Un workflow aura été lancé et il y a un job nommé *deploy-wikijs* dedans.
 
 Il est également possible de suivre le déploiement sur Pulumi en sélectionnant la stack déployée en allant dans l'onglet Activity.
+
+Lorsque le déploiement est terminé, il est possible d'accéder au Wiki en ouvrant un navigateur avec l'adresse fournie sur Google Cloud Run.
