@@ -14,7 +14,7 @@ const eksNodeInstanceType = config.get("eksNodeInstanceType") || "t3a.small";
 const vpcNetworkCidr = config.get("vpcNetworkCidr") || "10.0.0.0/16";
 
 // Create a new VPC
-const eksVpc = new awsx.ec2.Vpc("eks-vpc", {
+export const eksVpc = new awsx.ec2.Vpc("eks-vpc", {
     enableDnsHostnames: true,
     cidrBlock: vpcNetworkCidr,
     numberOfNatGateways: 1
