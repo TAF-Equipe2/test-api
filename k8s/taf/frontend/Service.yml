@@ -6,9 +6,10 @@ metadata:
     appClass: taf-frontend
   namespace: taf
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     appClass: taf-frontend
   ports:
     - port: 4200
       targetPort: http
+      name: taf-frontend-http
