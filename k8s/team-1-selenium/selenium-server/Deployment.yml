@@ -4,7 +4,7 @@ metadata:
   name: selenium-server
   namespace: taf
   labels:
-    appClass:: selenium-server
+    appClass: selenium-server
 spec:
   replicas: 1
   selector:
