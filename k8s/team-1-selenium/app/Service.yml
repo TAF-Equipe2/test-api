@@ -8,7 +8,7 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    app: app-selenium-team-1
+    appClass: app-selenium-team-1
   ports:
   - port: 3000
     targetPort: http
