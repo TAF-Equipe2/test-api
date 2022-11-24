@@ -20,4 +20,4 @@ spec:
           service:
             name: taf-frontend-service
             port: 
-              name: taf-frontend-http
+              name: taf-front-http

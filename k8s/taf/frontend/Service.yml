@@ -12,4 +12,4 @@ spec:
   ports:
     - port: 4200
       targetPort: http
-      name: taf-frontend-http
+      name: taf-front-http
