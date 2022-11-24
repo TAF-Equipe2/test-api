@@ -111,6 +111,7 @@ const globalIngress = new k8s.networking.v1.Ingress(
             globalIngressClass,
             k8sNamespace,
         ]
-    });
+    }
+);
 
 export const url = globalIngress.status.loadBalancer.ingress[0].hostname;
