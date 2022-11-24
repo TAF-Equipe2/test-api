@@ -19,8 +19,6 @@ spec:
       - name: app-selenium-team-1
         image: <TO UPDATE>
         env:
-          - name: NEXT_PUBLIC_TAF_URL
-            value: <TO UPDATE>
           - name: SELENIUM_SERVER
             value: <TO UPDATE>
         resources:
