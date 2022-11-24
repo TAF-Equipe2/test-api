@@ -8,7 +8,7 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    app: selenium-server
+    appClass: selenium-server
   ports:
   - port: 4444
     targetPort: http
