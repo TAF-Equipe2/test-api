@@ -9,7 +9,7 @@
     >
       <div class="form-group">
         <label for="method">Méthode</label>
-        <select            
+        <select
         class="form-control"
         required
         [(ngModel)]="form.method"
@@ -48,6 +48,19 @@
         </div>
       </div>
       <div class="form-group">
+        <label for="statusCode">Code de retour attendu</label>
+        <input
+          type="number"
+          min="200"
+          max="500"
+          class="form-control"
+          name="statusCode"
+          [(ngModel)]="form.statusCode"
+          required
+          #statusCode="ngModel"
+        />
+      </div>
+      <div class="form-group">
         <label for="input">Données d'entrée</label>
         <textarea
           type="input"
@@ -73,10 +86,10 @@
       </div>
       <div class="form-group">
         <button class="btn btn-primary btn-block">
-          Soumettre        
+          Soumettre
         </button>
       </div>
-     
+
     </form>
 
   </div>

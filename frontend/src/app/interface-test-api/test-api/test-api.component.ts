@@ -13,6 +13,7 @@ export class TestApiComponent implements OnInit {
     apiUrl: null,
     input: null,
     exceptedOutput:null,
+    statusCode:null
   };
 
   methods: any [] = [
@@ -21,7 +22,6 @@ export class TestApiComponent implements OnInit {
     { id: "delete", name: 'Delete' },
     { id: "update", name: 'Update' },
     { id: "options", name: 'Options' },
-
   ];
 
   constructor(
@@ -33,9 +33,9 @@ export class TestApiComponent implements OnInit {
 
 
   onSubmit(): void {
-    const { method, apiUrl, input, exceptedOutput } = this.form;
+    const { method, apiUrl, input, exceptedOutput, statusCode} = this.form;
 
-    this.testApiService.execute(method, apiUrl, input, exceptedOutput).subscribe({
+    this.testApiService.execute(method, apiUrl, input, exceptedOutput,statusCode).subscribe({
       next: data => {
         console.log(data);
       },

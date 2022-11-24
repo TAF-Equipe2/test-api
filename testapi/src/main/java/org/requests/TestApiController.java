@@ -3,7 +3,9 @@ package org.requests;
 import org.requests.methods.*;
 import org.requests.payload.request.TestApiRequest;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
+
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -12,6 +14,7 @@ public class TestApiController {
 
     @PostMapping("/checkApi")
     public void testApi(@Valid @RequestBody TestApiRequest testApiRequest) {
+        System.out.println("Je suis le microservice");
         redirectMethod(testApiRequest.getMethod(),
                        testApiRequest.getApiUrl(),
                        testApiRequest.getInput(),
