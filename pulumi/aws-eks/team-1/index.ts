@@ -23,7 +23,7 @@ const seleniumService = new k8s.core.v1.Service('team-1-selenium-service', selen
 // Deploy UI
 const UIDeploymentDefinition = readK8sDefinition('team-1-selenium/app/Deployment.yml');
 UIDeploymentDefinition.spec.template.spec.containers[0].image = image_tests_ui;
-UIDeploymentDefinition.spec.template.spec.containers[0].env[0].value = pulumi.interpolate`http://${seleniumService.status.loadBalancer.ingress[0].hostname}:${seleniumService.spec.ports[0].port}`
+UIDeploymentDefinition.spec.template.spec.containers[0].env[0].value = pulumi.interpolate`http://${seleniumService.status.loadBalancer.ingress[0].ip}:${seleniumService.spec.ports[0].port}`
 const UIDeployment = new k8s.apps.v1.Deployment('team-1-ui-deployment', UIDeploymentDefinition, { provider: eksCluster.provider, dependsOn: [k8sNamespace] });
 
 const UIServiceDefinition = readK8sDefinition('team-1-selenium/app/Service.yml');

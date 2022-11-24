@@ -54,7 +54,8 @@ export const eksCluster = new eks.Cluster("eks-cluster", {
     // Uncomment the next two lines for a private cluster (VPN access required)
     // endpointPrivateAccess: true,
     // endpointPublicAccess: true
-    userMappings: aws_auth_configMap
+    userMappings: aws_auth_configMap,
+    createOidcProvider: true,
 });
 
 // Export some values for use elsewhere

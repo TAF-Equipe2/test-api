@@ -6,7 +6,7 @@ metadata:
     appClass: selenium-server
   namespace: taf
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     appClass: selenium-server
   ports:
