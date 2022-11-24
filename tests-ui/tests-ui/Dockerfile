@@ -19,6 +19,7 @@ COPY . .
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
 # ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_PUBLIC_TAF_URL http://a71aa0b6dca0048c58afdf27221ad568-99348551.ca-central-1.elb.amazonaws.com:4200
 
 RUN npm run build
 

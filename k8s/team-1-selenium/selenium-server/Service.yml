@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: selenium-server-service
+  labels:
+    appClass: selenium-server
+  namespace: taf
+spec:
+  type: LoadBalancer
+  selector:
+    app: selenium-server
+  ports:
+  - port: 4444
+    targetPort: http
