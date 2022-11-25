@@ -34,21 +34,21 @@ export const eksVpc = new awsx.ec2.Vpc("eks-vpc", {
     ],
 });
 
-// const clusterSecurityGroup = new aws.ec2.SecurityGroup('clustersecgrp', {
-//     vpcId: eksVpc.id,
-//     ingress: [{
-//       protocol: 'all',
-//       fromPort: -1,
-//       toPort: -1,
-//       cidrBlocks: ['0.0.0.0/0'],
-//     }],
-//     egress: [{
-//       protocol: 'all',
-//       fromPort: -1,
-//       toPort: -1,
-//       cidrBlocks: ['0.0.0.0/0'],
-//     }]
-//   });
+const clusterSecurityGroup = new aws.ec2.SecurityGroup('clustersecgrp', {
+    vpcId: eksVpc.id,
+    ingress: [{
+      protocol: 'all',
+      fromPort: -1,
+      toPort: -1,
+      cidrBlocks: ['0.0.0.0/0'],
+    }],
+    egress: [{
+      protocol: 'all',
+      fromPort: -1,
+      toPort: -1,
+      cidrBlocks: ['0.0.0.0/0'],
+    }]
+  });
   
 
 // Using default-vpc to cut on cost
@@ -87,7 +87,7 @@ export const eksCluster = new eks.Cluster("eks-cluster", {
     // endpointPublicAccess: true
     userMappings: aws_auth_configMap,
     createOidcProvider: true,
-    // clusterSecurityGroup,
+    clusterSecurityGroup,
 });
 
 // Export some values for use elsewhere
