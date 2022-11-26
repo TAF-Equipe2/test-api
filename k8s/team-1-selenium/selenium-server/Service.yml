@@ -3,12 +3,19 @@ kind: Service
 metadata:
   name: selenium-server-service
   labels:
-    appClass: selenium-server
+    appClass: selenium-server-service
   namespace: taf
 spec:
   type: ClusterIP
   selector:
-    appClass: selenium-server
+    appClass: selenium-hub
   ports:
-  - port: 4444
-    targetPort: http
+  - name: publish
+    port: 4442
+    targetPort: 4442
+  - name: subscribe
+    port: 4443
+    targetPort: 4443
+  - name: http
+    port: 4444
+    targetPort: 4444
