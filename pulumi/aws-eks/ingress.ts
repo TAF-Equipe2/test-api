@@ -3,6 +3,7 @@ import * as k8s from '@pulumi/kubernetes';
 import * as aws from "@pulumi/aws";
 import { eksCluster, eksVpc, k8sNamespace } from './eks-cluster';
 import { readK8sDefinition } from "./utils/k8s-definitions";
+import {ingressPermissions} from './ingress-permissions';
 
 const globalIngressClassDefinition = readK8sDefinition('IngressClass.yml');
 const globalIngressClass = new k8s.networking.v1.IngressClass('global-ingress-class', globalIngressClassDefinition, { provider: eksCluster.provider });
@@ -34,12 +35,42 @@ const saAssumeRolePolicy = pulumi
     })
   ));
 const saRole = new aws.iam.Role('global-sa-role', {
-assumeRolePolicy: saAssumeRolePolicy.json,
+    assumeRolePolicy: saAssumeRolePolicy.json,
+});
+const saPolicy = new aws.iam.Policy('policy', {
+    description: 'Allow EKS access to resources',
+    policy: JSON.stringify({
+        Version: '2012-10-17',
+        Statement: [{
+            Action: [
+              // Configure which services the SA should have access to.
+              // Make it more strict / loose however you see fit.
+              'ec2:*',
+              'sqs:*',
+              's3:*',
+            ],
+            Effect: 'Allow',
+            Resource: '*',
+        }],
+    }),
+});
+
+// Attach the policy to the role
+new aws.iam.RolePolicyAttachment('global-sa-role-policy', {
+  policyArn: saPolicy.arn,
+  role: saRole,
 });
 
 const serviceAccountDefinition = readK8sDefinition('ServiceAccount.yml');
 serviceAccountDefinition.metadata.annotations['eks.amazonaws.com/role-arn'] = saRole.arn;
 const serviceAccount = new k8s.core.v1.ServiceAccount('global-service-account', serviceAccountDefinition, { provider: eksCluster.provider });
+
+const ingressControllerPolicy = new aws.iam.Policy('ingress-ctrl-policy', { policy: ingressPermissions });
+
+new aws.iam.RolePolicyAttachment(`global-sa-ingress-ctrl`, {
+    policyArn: ingressControllerPolicy.arn,
+    role: saRole,
+});
 
 const alb = new k8s.helm.v3.Release(
     'alb',
@@ -80,6 +111,7 @@ const globalIngress = new k8s.networking.v1.Ingress(
             globalIngressClass,
             k8sNamespace,
         ]
-    });
+    }
+);
 
 export const url = globalIngress.status.loadBalancer.ingress[0].hostname;

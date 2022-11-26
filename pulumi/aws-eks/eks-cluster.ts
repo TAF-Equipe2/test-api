@@ -17,8 +17,39 @@ const vpcNetworkCidr = config.get("vpcNetworkCidr") || "10.0.0.0/16";
 export const eksVpc = new awsx.ec2.Vpc("eks-vpc", {
     enableDnsHostnames: true,
     cidrBlock: vpcNetworkCidr,
-    numberOfNatGateways: 1
+    numberOfNatGateways: 1,
+    subnets: [
+        {
+            type: 'public',
+            tags: {
+                'kubernetes.io/role/elb': '1',
+            },
+        },
+        {
+            type: 'private',
+            tags: {
+                'kubernetes.io/role/internal-elb': '1',
+            }
+        }
+    ],
 });
+
+const clusterSecurityGroup = new aws.ec2.SecurityGroup('clustersecgrp', {
+    vpcId: eksVpc.id,
+    ingress: [{
+      protocol: 'all',
+      fromPort: -1,
+      toPort: -1,
+      cidrBlocks: ['0.0.0.0/0'],
+    }],
+    egress: [{
+      protocol: 'all',
+      fromPort: -1,
+      toPort: -1,
+      cidrBlocks: ['0.0.0.0/0'],
+    }]
+  });
+  
 
 // Using default-vpc to cut on cost
 // new awsx.ec2.DefaultVpc("default-vpc");
@@ -54,7 +85,9 @@ export const eksCluster = new eks.Cluster("eks-cluster", {
     // Uncomment the next two lines for a private cluster (VPN access required)
     // endpointPrivateAccess: true,
     // endpointPublicAccess: true
-    userMappings: aws_auth_configMap
+    userMappings: aws_auth_configMap,
+    createOidcProvider: true,
+    clusterSecurityGroup,
 });
 
 // Export some values for use elsewhere
