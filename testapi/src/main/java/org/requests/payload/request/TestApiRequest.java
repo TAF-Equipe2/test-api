@@ -10,21 +10,22 @@ public class TestApiRequest {
     private String exceptedOutput;
     private String input;
 
+    private int statusCode;
 
-    public String getApiUrl() { return apiUrl; }
+    public String getApiUrl() { return this.apiUrl; }
     public void setApiUrl(String apiUrl) { this.apiUrl = apiUrl; }
 
-    public String getMethod() { return method; }
-
+    public String getMethod() { return this.method; }
     public void setMethod(String method) { this.method = method; }
 
-    public String getExceptedOutput() { return exceptedOutput; }
-
+    public String getExceptedOutput() { return this.exceptedOutput; }
     public void setExceptedOutput(String exceptedOutput) { this.exceptedOutput = exceptedOutput; }
 
-    public String getInput() { return input; }
-
+    public String getInput() { return this.input; }
     public void setInput(String input) { this.input = input; }
+
+    public void setStatusCode(int statusCode){this.statusCode = statusCode;}
+    public int getStatusCode(){return this.statusCode;}
 }
 
 

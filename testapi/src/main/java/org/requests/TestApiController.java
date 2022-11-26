@@ -18,27 +18,28 @@ public class TestApiController {
         redirectMethod(testApiRequest.getMethod(),
                        testApiRequest.getApiUrl(),
                        testApiRequest.getInput(),
-                       testApiRequest.getExceptedOutput());
+                       testApiRequest.getExceptedOutput(),
+                       testApiRequest.getStatusCode());
         //Later add return info
     }
 
-    public void redirectMethod(String method, String url, String input, String output){
+    public void redirectMethod(String method, String url, String input, String output, int statusCode){
 
         switch(method){
             case "post":
-                (new Post()).execute(url,input,output);
+                (new Post()).execute(url,input,output,statusCode);
                 break;
             case "delete":
-                (new Delete()).execute(url,input,output);
+                (new Delete()).execute(url,input,output,statusCode);
                 break;
             case "options":
-                (new Options()).execute(url,input,output);
+                (new Options()).execute(url,input,output,statusCode);
                 break;
             case "get":
-                (new Get()).execute(url,input,output);
+                (new Get()).execute(url,input,output,statusCode);
                 break;
             case "update":
-                (new Update()).execute(url,input,output);
+                (new Update()).execute(url,input,output,statusCode);
                 break;
         }
     }

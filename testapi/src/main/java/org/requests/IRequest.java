@@ -1,22 +1,24 @@
 package org.requests;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import io.restassured.http.Headers;
 import io.restassured.response.Response;
-import io.restassured.response.ResponseBody;
 
 
 public interface IRequest {
 
-    void execute(String url, String input, String output);
-    public default void getResponse(Response response) {
+    void execute(String url, String input, String output, int statusCode);
+    public default void getResponse(Response response, String output) {
         int statusCode = response.getStatusCode();
         Headers header = response.getHeaders();
-        ResponseBody body = response.getBody();
+        String body = response.getBody().asString();
 
-        //Print to debug
-        System.out.println("La réponse est " + statusCode);
-        System.out.println("Headers est " + header);
-        System.out.println("Body est " + body.prettyPrint());
+        JsonElement expected = JsonParser.parseString(output).getAsJsonObject();
+        JsonElement actual = JsonParser.parseString((body)).getAsJsonObject();
+
+
+        System.out.println(expected.equals(actual));
     }
 
 
