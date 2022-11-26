@@ -7,6 +7,7 @@ public class TestApiRequest {
     private String apiUrl;
     @NotBlank
     private String method;
+    NotBlank
     private String exceptedOutput;
     private String input;
 

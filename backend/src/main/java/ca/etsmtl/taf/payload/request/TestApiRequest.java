@@ -9,5 +9,6 @@ public class TestApiRequest {
     public String exceptedOutput;
     public String input;
     public String method;
+    public int statusCode;
 
 }

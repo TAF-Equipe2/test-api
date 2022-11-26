@@ -1,10 +1,9 @@
 package org.requests;
 
 import org.requests.methods.*;
-import org.requests.payload.request.TestApiRequest;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
+import org.requests.payload.request.TestApiRequest;
 
 
 @CrossOrigin(origins = "*", maxAge = 3600)
