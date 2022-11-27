@@ -9,11 +9,17 @@ import { TestApiService } from 'src/app/_services/test-api.service';
 export class TestApiComponent implements OnInit {
 
   form: any = {
-    method: null,
+    method: "get",
     apiUrl: null,
+<<<<<<< HEAD
     statusCode: null,
     input: null,
     expectedOutput: null
+=======
+    input: "",
+    exceptedOutput:"",
+    statusCode:200
+>>>>>>> develop
   };
 
   methods: any [] = [
@@ -35,7 +41,6 @@ export class TestApiComponent implements OnInit {
 
   onSubmit(): void {
     const { method, apiUrl, statusCode, input, expectedOutput } = this.form;
-
     this.testApiService.execute(method, apiUrl, statusCode, input, expectedOutput).subscribe({
       next: data => {
         console.log(data);
