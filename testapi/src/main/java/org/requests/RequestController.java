@@ -26,7 +26,7 @@ public class RequestController {
         answer.statusCode = this.response.getStatusCode();
         answer.expectedOutput = this.request.getExpectedOutput();
         answer.output = this.response.getBody().asPrettyString();
-        answer.answer = this.checkStatusCode() && this.checkBody();
+        answer.answer = this.checkStatusCode() && this.checkOutput();
         return answer;
     }
 
@@ -38,7 +38,7 @@ public class RequestController {
         return this.request.getStatusCode() == this.response.getStatusCode();
     }
 
-    private boolean checkBody() {
+    private boolean checkOutput() {
         return this.request.getExpectedOutput().equals(this.response.getBody().asPrettyString());
     }
 }
