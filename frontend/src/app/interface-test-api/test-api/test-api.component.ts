@@ -10,16 +10,10 @@ export class TestApiComponent implements OnInit {
 
   form: any = {
     method: "get",
-    apiUrl: null,
-<<<<<<< HEAD
-    statusCode: null,
-    input: null,
-    expectedOutput: null
-=======
+    apiUrl: "",
     input: "",
     exceptedOutput:"",
     statusCode:200
->>>>>>> develop
   };
 
   methods: any [] = [
