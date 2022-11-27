@@ -1,30 +1,34 @@
 package org.requests.payload.request;
 
+import org.requests.Method;
 import javax.validation.constraints.NotBlank;
 
 public class TestApiRequest {
+    private Method method;
+
     @NotBlank
     private String apiUrl;
-    @NotBlank
-    private String method;
-    private String exceptedOutput;
+
+    private int statusCode;
+
     private String input;
 
+    private String expectedOutput;
 
-    public String getApiUrl() { return apiUrl; }
+    public Method getMethod() { return this.method; }
+    public void setMethod(String method) { this.method = Method.valueOf(method.toUpperCase()); }
+
+    public String getApiUrl() { return this.apiUrl; }
     public void setApiUrl(String apiUrl) { this.apiUrl = apiUrl; }
 
-    public String getMethod() { return method; }
+    public void setStatusCode(int statusCode) { this.statusCode = statusCode; }
+    public int getStatusCode(){ return this.statusCode; }
 
-    public void setMethod(String method) { this.method = method; }
-
-    public String getExceptedOutput() { return exceptedOutput; }
-
-    public void setExceptedOutput(String exceptedOutput) { this.exceptedOutput = exceptedOutput; }
-
-    public String getInput() { return input; }
-
+    public String getInput() { return this.input; }
     public void setInput(String input) { this.input = input; }
+
+    public String getExpectedOutput() { return this.expectedOutput; }
+    public void setExpectedOutput(String expectedOutput) { this.expectedOutput = expectedOutput; }
 }
 
 

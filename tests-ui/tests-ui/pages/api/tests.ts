@@ -13,6 +13,7 @@ export default function handler(
   res: NextApiResponse<TestResults>
 ) {
   const { Builder, By } = require("selenium-webdriver");
+  const chrome = require('selenium-webdriver/chrome');
   const body = JSON.parse(req.body);
   const {
     url,
@@ -38,9 +39,14 @@ export default function handler(
   };
 
   (async function executeTests() {
+    const options = new chrome.Options();
+    options.headless();
+    options.addArguments('no-sandbox')
+    options.addArguments('disable-dev-shm-usage')
     const seleniumServer = process.env.SELENIUM_SERVER ?? "http://localhost:4444/wd/hub";
     const driver = await new Builder()
       .forBrowser("chrome")
+      .setChromeOptions(options)
       .usingServer(seleniumServer)
       .build();
 

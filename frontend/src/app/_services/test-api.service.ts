@@ -16,13 +16,14 @@ const httpOptions = {
 export class TestApiService {
   constructor(private http: HttpClient) { }
 
-  execute(method:string, apiUrl :string , input :string , exceptedOutput:string): Observable<any> {
+  execute(method:string, apiUrl:string, statusCode:number, input:string, expectedOutput:string): Observable<any> {
 
     return this.http.post(AUTH_API + 'checkApi', {
-         method : method,
-         apiUrl : apiUrl,
-         input:input,
-         exceptedOutput:exceptedOutput
+         method: method,
+         apiUrl: apiUrl,
+         statusCode: statusCode,
+         input: input,
+         expectedOutput: expectedOutput
     }, httpOptions);
-}
+  }
 }

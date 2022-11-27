@@ -28,11 +28,11 @@ public class SignupRequest {
 	return fullName;
 }
 
-public void setFullName(String fullName) {
+  public void setFullName(String fullName) {
 	this.fullName = fullName;
 }
 
-public String getUsername() {
+  public String getUsername() {
     return username;
   }
 
