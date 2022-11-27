@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: jdbc:mysql://nostrasoft.com:3306/nostr321_taf-db
+    username: nostr321_taf
+    password: JKaVLX75iHwtrHc
   jpa:
     defer-datasource-initialization: true
     hibernate:

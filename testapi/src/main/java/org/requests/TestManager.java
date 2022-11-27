@@ -9,4 +9,3 @@ public class TestManager {
         SpringApplication.run(TestManager.class, args);
     }
 }
-
