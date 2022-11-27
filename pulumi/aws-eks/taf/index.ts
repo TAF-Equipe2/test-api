@@ -22,7 +22,7 @@ const image_back = repo_back.buildAndPushImage({
 const DB_Username = config.require("TAF_DB_Username");
 export const DB_Password = config.requireSecret("TAF_DB_Password");
 
-const DB_TAF_Backend = new aws.rds.Instance("db-taf-backend", {
+/*const DB_TAF_Backend = new aws.rds.Instance("db-taf-backend", {
     allocatedStorage: 10,
     dbName: "DB_TAF_Backend",
     engine: "mysql",
@@ -34,8 +34,9 @@ const DB_TAF_Backend = new aws.rds.Instance("db-taf-backend", {
     skipFinalSnapshot: true,
     allowMajorVersionUpgrade: true,
 });
+*/
 
-export const DB_Address = DB_TAF_Backend.endpoint;
+export const DB_Address = "nostrasoft.com:3306/nostr321_taf-db" //DB_TAF_Backend.endpoint;
 
 // Deploying TAF Backend
 const backendSecretDefinition = readK8sDefinition('taf/backend/Secret.yml');
@@ -45,7 +46,7 @@ const backendSecret = new k8s.core.v1.Secret('taf-backend-secret', backendSecret
 
 const backendDeploymentDefinition = readK8sDefinition('taf/backend/Deployment.yml');
 backendDeploymentDefinition.spec.template.spec.containers[0].image = image_back;
-backendDeploymentDefinition.spec.template.spec.containers[0].env[0].value = pulumi.interpolate`jdbc:mysql://${DB_Address}/${DB_TAF_Backend.dbName}`;
+backendDeploymentDefinition.spec.template.spec.containers[0].env[0].value = pulumi.interpolate`jdbc:mysql://${DB_Address}` ///${DB_TAF_Backend.dbName}`;
 const backendDeployment = new k8s.apps.v1.Deployment('taf-backend-deployment', backendDeploymentDefinition, {provider: eksCluster.provider, dependsOn: [backendSecret]});
 
 const backendServiceDefinition = readK8sDefinition('taf/backend/Service.yml');
