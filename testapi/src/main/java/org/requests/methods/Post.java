@@ -3,7 +3,8 @@ package org.requests.methods;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.requests.IRequest;
-import org.requests.payload.request.error.ErrorManager;
+
+import java.io.Serializable;
 
 import static io.restassured.RestAssured.given;
 
@@ -20,7 +21,7 @@ public class Post implements IRequest {
                 .then().log().body();
     }
     @Override
-    public void execute(String url, String input, String output, int statusCode){
+    public Serializable execute(String url, String input, String output, int statusCode){
 
         try {
             RequestSpecification httpRequest = given();
@@ -30,9 +31,15 @@ public class Post implements IRequest {
                     .statusCode(statusCode)
                     .when()
                     .post(url);
-            IRequest.super.getResponse(response,output);
+
+            if(output != null && !output.isEmpty()){
+                System.out.println(IRequest.super.equalBody(String.valueOf(response.getBody()),output));
+            }
         } catch(AssertionError ae){
-            System.out.println("Expected status code "+statusCode+" but was"+(new ErrorManager()).getStatusCode());
+            return false;
         }
+        return true;
     }
+
 }
+

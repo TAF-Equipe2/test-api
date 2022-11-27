@@ -19,24 +19,28 @@ import java.util.concurrent.CompletableFuture;
 @RequestMapping("/api/testapi")
 public class TestApiController {
     @PostMapping("/checkApi")
-    public CompletableFuture<Void> testApi(@Valid @RequestBody TestApiRequest testApiRequest) throws URISyntaxException, IOException, InterruptedException {
+    public void testApi(@Valid @RequestBody TestApiRequest testApiRequest) throws URISyntaxException, IOException, InterruptedException {
 
         System.out.println("Je suis la méthoed checkapi");
         var uri = new URI("http://localhost:8082/microservice/testapi/checkApi");
         ObjectMapper objectMapper = new ObjectMapper();
+
         String requestBody = objectMapper
                 .writerWithDefaultPrettyPrinter()
                 .writeValueAsString(testApiRequest);
 
+        HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder(uri)
                 .header("Content-Type", "application/json")
                 .POST(BodyPublishers.ofString(requestBody))
                 .build();
 
-        return HttpClient.newHttpClient()
-                .sendAsync(request, BodyHandlers.ofString())
-                .thenApply(HttpResponse::statusCode)
-                .thenAccept(System.out::println);
+
+        HttpResponse<String> response =
+                client.send(request, BodyHandlers.ofString());
+
+        System.out.println(response.body());
+
     }
 }
