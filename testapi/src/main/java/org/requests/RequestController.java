@@ -1,5 +1,6 @@
 package org.requests;
 
+import org.requests.payload.request.Answer;
 import org.requests.payload.request.TestApiRequest;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.response.Response;
@@ -18,9 +19,15 @@ public class RequestController {
                 .body(this.request.getInput());
     }
 
-    public boolean getAnswer() {
+    public Answer getAnswer() {
         this.execute();
-        return this.checkStatusCode() && this.checkBody();
+        Answer answer = new Answer();
+        answer.expectedStatusCode = this.request.getStatusCode();
+        answer.statusCode = this.response.getStatusCode();
+        answer.expectedOutput = this.request.getExpectedOutput();
+        answer.output = this.response.getBody().asPrettyString();
+        answer.answer = this.checkStatusCode() && this.checkBody();
+        return answer;
     }
 
     private void execute() {

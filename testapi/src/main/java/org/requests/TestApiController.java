@@ -13,10 +13,9 @@ import java.io.Serializable;
 public class TestApiController {
     @PostMapping("/checkApi")
     public Serializable testApi(@Valid @RequestBody TestApiRequest testApiRequest) {
-        System.out.println("Je suis le microservice");
+        System.out.println("Test-api service...");
         Serializable response = (redirectMethod(testApiRequest));
         return response;
-        // Later add return info
     }
 
     public Serializable redirectMethod(TestApiRequest request) {

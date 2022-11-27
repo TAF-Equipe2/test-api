@@ -20,8 +20,6 @@ import java.util.concurrent.CompletableFuture;
 public class TestApiController {
     @PostMapping("/checkApi")
     public void testApi(@Valid @RequestBody TestApiRequest testApiRequest) throws URISyntaxException, IOException, InterruptedException {
-
-        System.out.println("Je suis la méthode testApi");
         var uri = new URI("http://localhost:8082/microservice/testapi/checkApi");
         ObjectMapper objectMapper = new ObjectMapper();
 
