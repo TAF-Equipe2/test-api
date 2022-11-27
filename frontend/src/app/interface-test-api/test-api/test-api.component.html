@@ -20,15 +20,16 @@
           <option *ngFor="let method of methods" [value]="method.id">
               {{method.name}}
           </option>
-      </select>
-      <div
-      class="alert alert-danger"
-      role="alert"
-      *ngIf="method.errors && f.submitted"
-    >
-     Une méthode est requise
-    </div>
+        </select>
+        <div
+          class="alert alert-danger"
+          role="alert"
+          *ngIf="method.errors && f.submitted"
+        >
+          Une méthode est requise
+        </div>
       </div>
+
       <div class="form-group">
         <label for="apiUrl">Url de l'api</label>
         <input
@@ -47,19 +48,28 @@
          Une url est requise
         </div>
       </div>
+
       <div class="form-group">
         <label for="statusCode">Code de retour attendu</label>
         <input
           type="number"
-          min="200"
-          max="500"
+          min="100"
+          max="600"
           class="form-control"
           name="statusCode"
           [(ngModel)]="form.statusCode"
           required
           #statusCode="ngModel"
         />
+        <div
+          class="alert alert-danger"
+          role="alert"
+          *ngIf="statusCode.errors && f.submitted"
+        >
+          Une code retour est requis
+        </div>
       </div>
+
       <div class="form-group">
         <label for="input">Données d'entrée</label>
         <textarea
@@ -70,27 +80,25 @@
           #input="ngModel"
         >
         </textarea>
-
       </div>
+
       <div class="form-group">
-        <label for="exceptedOutput">Données attendues</label>
+        <label for="expectedOutput">Données attendues</label>
         <textarea
           type="input"
           class="form-control"
-          name="exceptedOutput"
-          [(ngModel)]="form.exceptedOutput"
-          #exceptedOutput="ngModel"
+          name="expectedOutput"
+          [(ngModel)]="form.expectedOutput"
+          #expectedOutput="ngModel"
         >
         </textarea>
-
       </div>
+
       <div class="form-group">
         <button class="btn btn-primary btn-block">
           Soumettre
         </button>
       </div>
-
     </form>
-
   </div>
 </div>

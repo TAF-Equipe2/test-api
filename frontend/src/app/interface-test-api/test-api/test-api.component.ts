@@ -11,30 +11,37 @@ export class TestApiComponent implements OnInit {
   form: any = {
     method: "get",
     apiUrl: null,
+<<<<<<< HEAD
+    statusCode: null,
+    input: null,
+    expectedOutput: null
+=======
     input: "",
     exceptedOutput:"",
     statusCode:200
+>>>>>>> develop
   };
 
   methods: any [] = [
     { id: "get", name: 'Get' },
+    { id: "head", name: 'Head' },
     { id: "post", name: 'Post' },
+    { id: "put", name: 'Put' },
     { id: "delete", name: 'Delete' },
-    { id: "update", name: 'Update' },
     { id: "options", name: 'Options' },
+    { id: "patch", name: 'Patch' },
   ];
 
   constructor(
-    private testApiService:TestApiService
+    private testApiService: TestApiService
   ) { }
 
   ngOnInit() {
   }
 
-
   onSubmit(): void {
-    const { method, apiUrl, input, exceptedOutput, statusCode} = this.form;
-    this.testApiService.execute(method, apiUrl, input, exceptedOutput,statusCode).subscribe({
+    const { method, apiUrl, statusCode, input, expectedOutput } = this.form;
+    this.testApiService.execute(method, apiUrl, statusCode, input, expectedOutput).subscribe({
       next: data => {
         console.log(data);
       },
@@ -42,6 +49,5 @@ export class TestApiComponent implements OnInit {
         console.log(err);
       }
     });
-
   }
 }
