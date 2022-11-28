@@ -7,9 +7,9 @@ import { readK8sDefinition } from "./utils/k8s-definitions";
 
 // Grab some values from the Pulumi configuration (or use default values)
 const config = new pulumi.Config();
-const minClusterSize = config.getNumber("minClusterSize") || 1;
-const maxClusterSize = config.getNumber("maxClusterSize") || 2;
-const desiredClusterSize = config.getNumber("desiredClusterSize") || 2;
+const minClusterSize = config.getNumber("minClusterSize") || 2;
+const maxClusterSize = config.getNumber("maxClusterSize") || 3;
+const desiredClusterSize = config.getNumber("desiredClusterSize") || 3;
 const eksNodeInstanceType = config.get("eksNodeInstanceType") || "t3a.small";
 const vpcNetworkCidr = config.get("vpcNetworkCidr") || "10.0.0.0/16";
 
