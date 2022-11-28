@@ -23,3 +23,4 @@ taf:
   app:
     jwtSecret: bezKoderSecretKey
     jwtExpirationMs: 86400000
+    testAPI_url_and_port: ${TEST_API_SERVICE_URL_AND_PORT}

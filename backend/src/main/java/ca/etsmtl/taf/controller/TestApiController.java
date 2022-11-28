@@ -13,14 +13,20 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.concurrent.CompletableFuture;
+import org.springframework.beans.factory.annotation.Value;
+
+
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/testapi")
 public class TestApiController {
+    @Value("${taf.app.testAPI_url_and_port}")
+    String Test_API_microservice_url_and_port;
+
     @PostMapping("/checkApi")
     public void testApi(@Valid @RequestBody TestApiRequest testApiRequest) throws URISyntaxException, IOException, InterruptedException {
-        var uri = new URI("http://localhost:8082/microservice/testapi/checkApi");
+        var uri = new URI(Test_API_microservice_url_and_port+"/microservice/testapi/checkApi");
         ObjectMapper objectMapper = new ObjectMapper();
 
         String requestBody = objectMapper
