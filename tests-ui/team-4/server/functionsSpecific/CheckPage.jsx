@@ -7,7 +7,7 @@ async function CheckPage(driver, website) {
     awnser: [],
   };
   try {
-    result.name = `Vérifier de la page courrante - ${website} `;
+    result.name = `Vérifier de la page courrante - ( ${website} )`;
     const url = await driver.getCurrentUrl();
     if (url === website) {
       result.passed = true;

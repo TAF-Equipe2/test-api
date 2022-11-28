@@ -56,7 +56,9 @@ async function TestCase(website, tests, hideBrowser) {
             if (testResult['EnterInput']) {
                 testResult[`EnterInput-2`] = await TestingFunctions.enterInput(driver, test.locator, test.input);
             }
-            testResult['EnterInput'] = await TestingFunctions.enterInput(driver, test.locator, test.input);
+            else {
+                testResult['EnterInput'] = await TestingFunctions.enterInput(driver, test.locator, test.input);
+            }
         }
         // Ask selenium to wait 
         if (test.value === 'Wait') {

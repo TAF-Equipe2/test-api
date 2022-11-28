@@ -6,7 +6,7 @@ async function OpenNavigator(driver, website) {
     reason: "Aucune raison",
     awnser: [],
   };
-  result.name = `Ouvrir le navigateur - ${website} `;
+  result.name = `Ouvrir le navigateur - ( ${website} ) ` ;
 
   try {
     await driver.get(website);

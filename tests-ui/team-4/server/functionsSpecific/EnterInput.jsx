@@ -11,7 +11,7 @@ async function EnterInput(driver, locator, input) {
 
   const action = locator.split("=");
   if (action[1] !== undefined) {
-    result.name = `Écrire du texte dans un champ - ${action[0]}=${action[1]} `;
+    result.name = `Écrire du texte dans un champ - ( ${action[0]}=${action[1]} )`;
   }
   try {
     if (action[0] === "id") {

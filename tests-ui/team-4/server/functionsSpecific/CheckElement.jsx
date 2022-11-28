@@ -9,6 +9,9 @@ async function CheckElement(driver, locator) {
     awnser: [],
   };
   const action = locator.split("=");
+  if (action[1] !== undefined) {
+    result.name = `Vérifier l'existence d'un element - ( ${action[0]}=${action[1]} )`;
+  }
   try {
     if (action[0] === "id") {
       await driver.findElement(By.id(action[1])).catch((err) => {
