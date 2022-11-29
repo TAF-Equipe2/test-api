@@ -11,4 +11,4 @@ spec:
     appClass: testapi
   ports:
     - port: 8082
-      targetPort: testapi_service_port
+      targetPort: testapi-port
