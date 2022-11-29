@@ -6,3 +6,4 @@ metadata:
 data:
   # property-like keys; each key maps to a simple value
   testapi_url_and_port: <TO UPDATE>
+immutable: false
