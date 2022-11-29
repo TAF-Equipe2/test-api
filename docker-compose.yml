@@ -1,5 +1,13 @@
 version: "3.9"
 services:
+  testapi:
+    image: testapi
+    container_name: testapi
+    build:
+      context: ./testapi
+    ports:
+      # TEST_API_SERVICE_PORT is defined as env variable in .docker_config.env
+      - "${TEST_API_SERVICE_PORT}:${TEST_API_SERVICE_PORT}"
   backend:
     image: back
     container_name: back
@@ -7,6 +15,9 @@ services:
       context: ./backend
     ports:
       - "9000:80"
+    env_file:
+      # Specifying the env file with necessaries values
+      - .docker_config.env
   frontend:
     image: front
     container_name: front

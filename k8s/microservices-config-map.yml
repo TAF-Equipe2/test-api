@@ -5,5 +5,6 @@ metadata:
   namespace: taf
 data:
   # property-like keys; each key maps to a simple value
-  testapi_url_and_port: <TO UPDATE>
+  testapi_url: <TO UPDATE>
+  testapi_port: <TO_UPDATE>
 immutable: false

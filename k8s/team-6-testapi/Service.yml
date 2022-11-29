@@ -6,9 +6,9 @@ metadata:
     appClass: testapi
   namespace: taf
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     appClass: testapi
   ports:
     - port: 8082
-      targetPort: http
+      targetPort: testapi_service_port

@@ -21,12 +21,15 @@ import org.springframework.beans.factory.annotation.Value;
 @RestController
 @RequestMapping("/api/testapi")
 public class TestApiController {
-    @Value("${taf.app.testAPI_url_and_port}")
-    String Test_API_microservice_url_and_port;
+    @Value("${taf.app.testAPI_url}")
+    String Test_API_microservice_url;
+
+    @Value("${taf.app.testAPI_port}")
+    String Test_API_microservice_port;
 
     @PostMapping("/checkApi")
     public void testApi(@Valid @RequestBody TestApiRequest testApiRequest) throws URISyntaxException, IOException, InterruptedException {
-        var uri = new URI(Test_API_microservice_url_and_port+"/microservice/testapi/checkApi");
+        var uri = new URI(Test_API_microservice_url+":"+Test_API_microservice_port+"/microservice/testapi/checkApi");
         ObjectMapper objectMapper = new ObjectMapper();
 
         String requestBody = objectMapper

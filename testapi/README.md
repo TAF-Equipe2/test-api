@@ -41,5 +41,7 @@ By default the binded port for this application is 8082, hence the command would
 docker run -p 127.0.0.1:8082:8082 taf_testapi:latest
 ```
 
+## Launching TAF
 
-
+Since you'll need TAF to run (since this is only a microservice), you should have a look at running the docker-compose.
+The steps are defined in the source directory [README.md](../README.md).
