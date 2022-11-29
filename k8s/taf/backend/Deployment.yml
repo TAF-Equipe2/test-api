@@ -32,10 +32,10 @@ spec:
                   # Specify the key associated with the value
                   key: testapi_url
             - name: TEST_API_SERVICE_PORT
-                valueFrom:
-                  configMapKeyRef:
-                    name: microservices-config-map
-                    key: testapi_port
+              valueFrom:
+                configMapKeyRef:
+                  name: microservices-config-map
+                  key: testapi_port
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 secretKeyRef:
