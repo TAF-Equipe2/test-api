@@ -7,7 +7,7 @@ import {eksCluster, k8sNamespace} from "../eks-cluster";
 
 
 const config = new pulumi.Config("testapi");
-const testapi_binded_port = config.getNumber("bindedPort") || 8082;
+const testapi_binded_port = config.get("bindedPort") || "8082";
 
 
 // Build and publish to an ECR registry.
