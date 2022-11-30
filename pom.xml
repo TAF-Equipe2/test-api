@@ -24,5 +24,7 @@
     <modules>
         <module>backend</module>
         <module>frontend</module>
+        <module>jmeter</module>
+        <module>gatling</module>
     </modules>
 </project>
