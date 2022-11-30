@@ -17,13 +17,12 @@ export class TestApiService {
   constructor(private http: HttpClient) { }
 
   execute(method:string, apiUrl:string, statusCode:number, input:string, expectedOutput:string): Observable<any> {
-
     return this.http.post(AUTH_API + 'checkApi', {
          method: method,
          apiUrl: apiUrl,
          statusCode: statusCode,
+         expectedOutput: expectedOutput,
          input: input,
-         expectedOutput: expectedOutput
     }, httpOptions);
   }
 }

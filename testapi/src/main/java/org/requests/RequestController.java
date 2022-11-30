@@ -39,6 +39,9 @@ public class RequestController {
     }
 
     private boolean checkOutput() {
-        return this.request.getExpectedOutput().equals(this.response.getBody().asPrettyString());
+        if(!this.request.getExpectedOutput().isEmpty()){
+            return this.request.getExpectedOutput().equals(this.response.getBody().asPrettyString());
+        }
+        return true;
     }
 }

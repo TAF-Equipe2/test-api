@@ -1,6 +1,7 @@
 package ca.etsmtl.taf.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ca.etsmtl.taf.payload.request.TestApiRequest;
 import javax.validation.Valid;
@@ -12,7 +13,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
-import java.util.concurrent.CompletableFuture;
+
 import org.springframework.beans.factory.annotation.Value;
 
 
@@ -28,7 +29,7 @@ public class TestApiController {
     String Test_API_microservice_port;
 
     @PostMapping("/checkApi")
-    public void testApi(@Valid @RequestBody TestApiRequest testApiRequest) throws URISyntaxException, IOException, InterruptedException {
+    public ResponseEntity<String> testApi(@Valid @RequestBody TestApiRequest testApiRequest) throws URISyntaxException, IOException, InterruptedException {
         var uri = new URI(Test_API_microservice_url+":"+Test_API_microservice_port+"/microservice/testapi/checkApi");
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -45,7 +46,6 @@ public class TestApiController {
 
         HttpResponse<String> response =
                 client.send(request, BodyHandlers.ofString());
-
-        System.out.println(response.body());
+        return ResponseEntity.ok(response.body());
     }
 }

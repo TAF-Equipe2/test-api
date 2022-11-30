@@ -12,7 +12,7 @@ export class TestApiComponent implements OnInit {
     method: "get",
     apiUrl: "",
     input: "",
-    exceptedOutput:"",
+    exceptedOutput: "",
     statusCode:200
   };
 
@@ -26,6 +26,11 @@ export class TestApiComponent implements OnInit {
     { id: "patch", name: 'Patch' },
   ];
 
+  answer ="";
+  isResponse =false;
+  statusCode :any;
+
+
   constructor(
     private testApiService: TestApiService
   ) { }
@@ -34,13 +39,15 @@ export class TestApiComponent implements OnInit {
   }
 
   onSubmit(): void {
-    const { method, apiUrl, statusCode, input, expectedOutput } = this.form;
-    this.testApiService.execute(method, apiUrl, statusCode, input, expectedOutput).subscribe({
+    const { method, apiUrl, statusCode, input, exceptedOutput } = this.form;
+    this.testApiService.execute(method, apiUrl, statusCode, input, exceptedOutput).subscribe({
       next: data => {
-        console.log(data);
+        console.log(data.statusCode);
+        this.isResponse = true;
+        this.answer = data.answer;
+        this.statusCode = JSON.stringify(data.statusCode);
       },
       error: err => {
-        console.log(err);
       }
     });
   }
