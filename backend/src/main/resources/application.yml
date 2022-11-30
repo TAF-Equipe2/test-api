@@ -25,3 +25,7 @@ taf:
     jwtExpirationMs: 86400000
     testAPI_url: ${TEST_API_SERVICE_URL}
     testAPI_port: ${TEST_API_SERVICE_PORT}
+    gatling_url: ${GATLING_URL}
+    gatling_port: ${GATLING_PORT}
+    jmeter_url: ${JMETER_URL}
+    jmeter_port: ${JMETER_PORT}

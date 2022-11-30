@@ -7,7 +7,7 @@ import {eksCluster, k8sNamespace} from "../eks-cluster";
 
 
 const config = new pulumi.Config("testapi");
-const testapi_binded_port = config.getNumber("bindedPort") || 8082;
+const testapi_binded_port = config.requireNumber("bindedPort");
 
 
 // Build and publish to an ECR registry.
@@ -29,12 +29,4 @@ const service = new k8s.core.v1.Service('team-6-testapi-service', serviceDefinit
     dependsOn: [deployment]
 });
 
-const microservicesConfigMapDefinition = readK8sDefinition('microservices-config-map.yml')
-export const team_6_url = service.status.loadBalancer.ingress[0].hostname;
-microservicesConfigMapDefinition.data.testapi_url = team_6_url;
-microservicesConfigMapDefinition.data.testapi_port = testapi_binded_port
-
-export const microserviceConfigMapResource = new k8s.core.v1.ConfigMap("microservices-config-map", microservicesConfigMapDefinition, {
-    provider: eksCluster.provider,
-    dependsOn: [service]
-})
+export const team_6_url = service.spec.clusterIP;
