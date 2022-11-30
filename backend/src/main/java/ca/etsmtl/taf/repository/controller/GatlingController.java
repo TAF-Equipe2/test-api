@@ -14,6 +14,12 @@ import java.io.File;
 @RestController
 @RequestMapping(method = RequestMethod.POST)
 public class GatlingController {
+    @Value("${taf.app.gatling_url}")
+    String Gatling_microservice_url;
+
+    @Value("${taf.app.gatling_port}")
+    Integer Gatling_microservice_port;
+
     // POST mapping sur la route /api/gatling pour lancer un test Gatling avec un sampler HTTP Request
     @PostMapping(path = "/gatling/http-request", consumes = "application/x-www-form-urlencoded")
     public ResponseEntity<?> gatlingHttpRequest(@Valid HttpSampler httpSampler) {
@@ -23,7 +29,7 @@ public class GatlingController {
         System.out.println(xmlTestPlan.getAbsolutePath());
 
         // Envoi du fichier XML au serveur TCP
-        TcpClient socket = new TcpClient(4021, "localhost");
+        TcpClient socket = new TcpClient(Gatling_microservice_port, Gatling_microservice_url);
         socket.sendFile(xmlTestPlan);
 
         return ResponseEntity.ok(HttpStatus.NO_CONTENT);

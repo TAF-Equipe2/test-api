@@ -3,6 +3,7 @@ FROM openjdk:17-jdk as builder
 WORKDIR /code
 COPY . .
 
+RUN chmod 777 ./mvnw
 RUN ./mvnw package -pl jmeter
 
 FROM openjdk:17-jdk-alpine as runner

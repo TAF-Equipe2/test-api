@@ -29,12 +29,4 @@ const service = new k8s.core.v1.Service('team-6-testapi-service', serviceDefinit
     dependsOn: [deployment]
 });
 
-const microservicesConfigMapDefinition = readK8sDefinition('microservices-config-map.yml')
 export const team_6_url = service.spec.clusterIP;
-microservicesConfigMapDefinition.data.testapi_url = team_6_url;
-microservicesConfigMapDefinition.data.testapi_port = testapi_binded_port.toString();
-
-export const microserviceConfigMapResource = new k8s.core.v1.ConfigMap("microservices-config-map", microservicesConfigMapDefinition, {
-    provider: eksCluster.provider,
-    dependsOn: [service]
-})

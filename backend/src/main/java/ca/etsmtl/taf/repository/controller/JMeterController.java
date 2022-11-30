@@ -14,6 +14,11 @@ import java.io.File;
 @RestController
 @RequestMapping(method = RequestMethod.POST)
 public class JMeterController {
+    @Value("${taf.app.jmeter_url}")
+    String jmeter_microservice_url;
+
+    @Value("${taf.app.jmeter_port}")
+    Integer jmeter_microservice_port;
 
     // POST mapping sur la route /api/jmeter pour lancer un test JMeter avec un sampler HTTP Request
     @PostMapping(path = "/jmeter/http-request", consumes = "application/x-www-form-urlencoded")
@@ -24,7 +29,7 @@ public class JMeterController {
         System.out.println(xmlTestPlan.getAbsolutePath());
 
         // Envoi du fichier XML au serveur TCP
-        TcpClient socket = new TcpClient();
+        TcpClient socket = new TcpClient(jmeter_microservice_port, jmeter_microservice_url);
         socket.sendFile(xmlTestPlan);
 
         return ResponseEntity.ok(HttpStatus.NO_CONTENT);
