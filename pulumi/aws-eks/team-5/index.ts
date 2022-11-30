@@ -14,6 +14,10 @@ const image_jmeter = repo.buildAndPushImage({
     dockerfile: path.resolve(process.cwd(), '../..', 'jmeter/Dockerfile'),
     context: path.resolve(process.cwd(), '../..')
 });
+const image_gatling = repo.buildAndPushImage({
+    dockerfile: path.resolve(process.cwd(), '../..', 'gatling/Dockerfile'),
+    context: path.resolve(process.cwd(), '../..')
+});
 
 // Deploying Jmeter
 const jmeterDeploymentDefinition = readK8sDefinition('team-5-load-testing/jmeter/Deployment.yml');
@@ -29,4 +33,21 @@ const jmeterService = new k8s.core.v1.Service('jmeter-service', jmeterServiceDef
     dependsOn: [jmeterDeployment]
 });
 
+// Deploying Gatling
+const gatlingDeploymentDefinition = readK8sDefinition('team-5-load-testing/gatling/Deployment.yml');
+gatlingDeploymentDefinition.spec.template.spec.containers[0].image = image_gatling;
+const gatlingDeployment = new k8s.apps.v1.Deployment('gatling-deployment', gatlingDeploymentDefinition, {
+    provider: eksCluster.provider,
+    dependsOn: [k8sNamespace]
+});
+
+const gatlingServiceDefinition = readK8sDefinition('team-5-load-testing/gatling/Service.yml');
+const gatlingService = new k8s.core.v1.Service('gatling-service', gatlingServiceDefinition, {
+    provider: eksCluster.provider,
+    dependsOn: [gatlingDeployment]
+});
+
+
+
 export const jmeter_url = jmeterService.spec.clusterIP;
+export const gatling_url = gatlingService.spec.clusterIP;

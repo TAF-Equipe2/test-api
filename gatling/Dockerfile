@@ -9,7 +9,7 @@ FROM openjdk:17-jdk-alpine as runner
 
 WORKDIR /code
 
-ARG JAR_FILE=target/gatling-1.0.0-SNAPSHOT.jar
+ARG JAR_FILE=target/gatling-maven-plugin-demo-java-1.0.0.jar
 
 COPY --from=builder /code/gatling/${JAR_FILE} /code/app.jar
 
