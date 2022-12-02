@@ -7,7 +7,7 @@ spring:
   jpa:
     defer-datasource-initialization: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
       dialect : ${spring.jpa.properties.hibernate.dialect}
     properties:
       hibernate:

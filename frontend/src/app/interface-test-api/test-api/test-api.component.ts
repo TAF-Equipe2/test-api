@@ -28,7 +28,7 @@ export class TestApiComponent implements OnInit {
 
   answer ="";
   isResponse =false;
-  statusCode :any;
+  statusCode = "";
 
 
   constructor(
@@ -46,6 +46,7 @@ export class TestApiComponent implements OnInit {
         this.isResponse = true;
         this.answer = data.answer;
         this.statusCode = JSON.stringify(data.statusCode);
+        console.log(this.statusCode);
       },
       error: err => {
       }
