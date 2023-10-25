@@ -2,6 +2,7 @@ package org.requests.payload.request;
 
 import org.requests.Method;
 import javax.validation.constraints.NotBlank;
+import java.util.Map;
 
 public class TestApiRequest {
     private Method method;
@@ -16,6 +17,8 @@ public class TestApiRequest {
     private String expectedOutput;
 
     private int responseTime;
+
+    private Map<String, String> expectedHeaders;
 
     public Method getMethod() { return this.method; }
     public void setMethod(String method) { this.method = Method.valueOf(method.toUpperCase()); }
@@ -38,6 +41,14 @@ public class TestApiRequest {
 
     public void setResponseTime(int responseTime) {
         this.responseTime = responseTime;
+    }
+
+    public Map<String, String> getExpectedHeaders() {
+        return expectedHeaders;
+    }
+
+    public void setExpectedHeaders(Map<String, String> expectedHeaders) {
+        this.expectedHeaders = expectedHeaders;
     }
 }
 
