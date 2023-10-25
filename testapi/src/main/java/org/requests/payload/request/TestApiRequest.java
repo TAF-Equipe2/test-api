@@ -15,6 +15,8 @@ public class TestApiRequest {
 
     private String expectedOutput;
 
+    private int responseTime;
+
     public Method getMethod() { return this.method; }
     public void setMethod(String method) { this.method = Method.valueOf(method.toUpperCase()); }
 
@@ -29,6 +31,14 @@ public class TestApiRequest {
 
     public String getExpectedOutput() { return this.expectedOutput; }
     public void setExpectedOutput(String expectedOutput) { this.expectedOutput = expectedOutput; }
+
+    public int getResponseTime() {
+        return responseTime;
+    }
+
+    public void setResponseTime(int responseTime) {
+        this.responseTime = responseTime;
+    }
 }
 
 

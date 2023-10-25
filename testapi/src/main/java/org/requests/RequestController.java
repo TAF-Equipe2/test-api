@@ -8,8 +8,8 @@ import io.restassured.response.Response;
 import static io.restassured.RestAssured.given;
 
 public class RequestController {
-    private TestApiRequest request;
-    private RequestSpecification httpRequest;
+    private final TestApiRequest request;
+    private final RequestSpecification httpRequest;
     private Response response;
 
     public RequestController(TestApiRequest request) {
@@ -26,7 +26,7 @@ public class RequestController {
         answer.statusCode = this.response.getStatusCode();
         answer.expectedOutput = this.request.getExpectedOutput();
         answer.output = this.response.getBody().asPrettyString();
-        answer.answer = this.checkStatusCode() && this.checkOutput();
+        answer.answer = this.checkStatusCode() && this.checkOutput() && this.checkResponseTime();
         return answer;
     }
 
@@ -43,5 +43,9 @@ public class RequestController {
             return this.request.getExpectedOutput().equals(this.response.getBody().asPrettyString());
         }
         return true;
+    }
+
+    private boolean checkResponseTime() {
+        return response.getTime() < request.getResponseTime();
     }
 }

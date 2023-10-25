@@ -13,8 +13,7 @@ import java.io.Serializable;
 public class TestApiController {
     @PostMapping("/checkApi")
     public Serializable testApi(@Valid @RequestBody TestApiRequest testApiRequest) {
-        Serializable response = (redirectMethod(testApiRequest));
-        return response;
+        return (redirectMethod(testApiRequest));
     }
 
     public Serializable redirectMethod(TestApiRequest request) {
