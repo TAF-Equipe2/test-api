@@ -1,0 +1,44 @@
+<h3 mat-dialog-title>ajouter un test</h3>
+
+<mat-card>
+  <mat-card-content>
+
+    <form class="example-form" [formGroup]="addTestForm">
+
+      <table class="example-full-width" cellspacing="0">
+        <tr>
+          <td>
+            <mat-form-field class="example-full-width" appearance="fill">
+              <mat-label>name</mat-label>
+              <input matInput formControlName="name">
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field class="example-full-width" appearance="fill">
+              <mat-label>date de creation</mat-label>
+              <input matInput type="date" formControlName="created">
+            </mat-form-field>
+          </td>
+
+        </tr>
+      </table>
+      <mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>description</mat-label>
+        <input matInput  formControlName="description">
+      </mat-form-field>
+
+
+      <div mat-dialog-actions>
+        <button mat-button  [disabled]="addTestForm.invalid" [mat-dialog-close]="1" (click)="saveAdd()">sauvgarder</button>
+        <button mat-button (click)="onNoClick()" tabindex="-1">quitter</button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>
+
+
+
+
+
+
+
