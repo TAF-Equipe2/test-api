@@ -37,8 +37,8 @@ export class TestApiComponent implements OnInit {
     { id: "options", name: 'Options' },
     { id: "patch", name: 'Patch' },
   ];
-  //dataTests : testModel [] = [];
-  dataTests = fakeData;
+  dataTests : testModel [] = [];
+  //dataTests = fakeData;
 
 
 
@@ -58,7 +58,11 @@ export class TestApiComponent implements OnInit {
   }
 
   getTestsList(): void{
-    this.dataTests ;
+    //this.dataTests ;
+
+    this.dataTests = fakeData.map(item => new testModel(item.id, item.methode, item.URL, item.status));
+
+
     /*setTimeout(() => {
       this.projectsService.getTestList()
       .pipe(first())
@@ -107,4 +111,32 @@ export class TestApiComponent implements OnInit {
       this.getTestsList();
     });
   }
+
+  exportCSV(): void {
+    if (this.dataTests.length === 0) {
+      return;
+    }
+    const separator = ',';
+    const keys = Object.keys(this.dataTests[0]) as (keyof testModel)[];
+    const csvContent =
+      keys.join(separator) +
+      '\n' +
+      this.dataTests.map(item => {
+        return keys.map(key => {
+          return (item as any)[key];
+        }).join(separator);
+      }).join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    if (link.download !== undefined) {
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'dataTests.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }
+
 }
