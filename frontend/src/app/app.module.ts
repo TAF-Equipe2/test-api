@@ -24,6 +24,8 @@ import { AddTestDialogComponent } from './interface-test-api/test-api/add-test-d
 import {MatDialog, MatDialogModule} from "@angular/material/dialog";
 import { DeleteTestDialogComponent } from './interface-test-api/test-api/delete-test-dialog/delete-test-dialog.component';
 import {MatCardModule} from "@angular/material/card";
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -51,7 +53,9 @@ import {MatCardModule} from "@angular/material/card";
         MatButtonModule,
         MatDialogModule,
         MatCardModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        MatInputModule,
+        MatSelectModule
     ],
   providers: [authInterceptorProviders],
   bootstrap: [AppComponent]
