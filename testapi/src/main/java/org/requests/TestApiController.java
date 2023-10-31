@@ -23,23 +23,15 @@ public class TestApiController {
     @PostMapping("/checkApi")
     public Serializable testApi(@Valid @RequestBody TestApiRequest testApiRequest) {
 
-        Method method = testApiRequest.getMethod();
-        String apiUrl = testApiRequest.getApiUrl();
-        Map<String, String> expectedHeaders = testApiRequest.getExpectedHeaders();
+        Map<String, String> requestHeaders = testApiRequest.getHeaders();
 
-        RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
 
-        for (Map.Entry<String, String> entry : expectedHeaders.entrySet()) {
+        for (Map.Entry<String, String> entry : requestHeaders.entrySet()) {
             headers.set(entry.getKey(), entry.getValue());
         }
 
         HttpEntity<?> entity = new HttpEntity<>(headers);
-        String methodAsString = convertMethodToString(method);
-
-        String response = restTemplate.exchange(apiUrl,  HttpMethod.resolve(methodAsString), entity, String.class).getBody();
-
-        System.out.println(response);
 
         return (redirectMethod(testApiRequest));
     }
@@ -47,22 +39,6 @@ public class TestApiController {
     public Serializable redirectMethod(TestApiRequest request) {
         return new RequestController(request).getAnswer();
     }
-
-    private String convertMethodToString(Method method) {
-        switch (method) {
-            case GET:
-                return "GET";
-            case POST:
-                return "POST";
-            case PUT:
-                return "PUT";
-            case DELETE:
-                return "DELETE";
-            default:
-                return "GET"; 
-        }
-    }
-
 
     
 }
