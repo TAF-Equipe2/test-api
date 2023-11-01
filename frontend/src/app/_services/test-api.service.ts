@@ -5,7 +5,7 @@ import { catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import {testModel} from "../models/test-model";
 
-const AUTH_API = `${environment.apiUrl}/api/testapi/`;
+const AUTH_API = `${environment.apiUrl}/microservice/testapi/`;
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
