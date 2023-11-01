@@ -1,9 +1,12 @@
 package org.requests;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import org.requests.payload.request.Answer;
 import org.requests.payload.request.TestApiRequest;
-import io.restassured.specification.RequestSpecification;
-import io.restassured.response.Response;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +18,8 @@ public class RequestController {
     private final TestApiRequest request;
     private final RequestSpecification httpRequest;
     private Response response;
+
+    private JsonNode fieldAnswer;
     private final List<String> messages = new ArrayList<>();
 
     public RequestController(TestApiRequest request) {
@@ -27,11 +32,10 @@ public class RequestController {
     public Answer getAnswer() {
         this.execute();
         Answer answer = new Answer();
-        answer.expectedStatusCode = this.request.getStatusCode();
         answer.statusCode = this.response.getStatusCode();
-        answer.expectedOutput = this.request.getExpectedOutput();
         answer.output = this.response.getBody().asPrettyString();
         answer.answer = this.checkStatusCode() && this.checkOutput() && this.checkResponseTime() && this.checkResponseHeaders();
+        answer.fieldAnswer = this.fieldAnswer;
         answer.messages = this.messages;
         return answer;
     }
@@ -45,11 +49,21 @@ public class RequestController {
     }
 
     private boolean checkOutput() {
-        if(!this.request.getExpectedOutput().isEmpty()){
-            return this.request.getExpectedOutput().equals(this.response.getBody().asPrettyString());
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode expectedOutput = this.request.getExpectedOutput();
+        ;
+        JsonNode output = null;
+        try {
+            output = mapper.readTree(this.response.getBody().asPrettyString());
+        } catch (JsonProcessingException e) {
+            this.messages.add("Impossible to parse the output");
         }
-        return true;
+
+        this.fieldAnswer = JsonComparator.compareJson(expectedOutput, output, mapper.createObjectNode());
+
+        return expectedOutput.equals(output);
     }
+
 
     private boolean checkResponseTime() {
         return response.getTime() < request.getResponseTime();

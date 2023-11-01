@@ -1,6 +1,8 @@
 package org.requests.payload.request;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.requests.Method;
+
 import javax.validation.constraints.NotBlank;
 import java.util.Map;
 
@@ -14,7 +16,7 @@ public class TestApiRequest {
 
     private String input;
 
-    private String expectedOutput;
+    private JsonNode expectedOutput;
 
     private int responseTime;
 
@@ -32,8 +34,13 @@ public class TestApiRequest {
     public String getInput() { return this.input; }
     public void setInput(String input) { this.input = input; }
 
-    public String getExpectedOutput() { return this.expectedOutput; }
-    public void setExpectedOutput(String expectedOutput) { this.expectedOutput = expectedOutput; }
+    public JsonNode getExpectedOutput() {
+        return this.expectedOutput;
+    }
+
+    public void setExpectedOutput(JsonNode expectedOutput) {
+        this.expectedOutput = expectedOutput;
+    }
 
     public int getResponseTime() {
         return responseTime;
