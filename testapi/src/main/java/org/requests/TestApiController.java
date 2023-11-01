@@ -1,6 +1,5 @@
 package org.requests;
 
-import org.requests.Method;
 import org.requests.payload.request.TestApiRequest;
 import org.springframework.web.bind.annotation.*;
 
