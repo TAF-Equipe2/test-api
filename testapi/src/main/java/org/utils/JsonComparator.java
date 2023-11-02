@@ -1,4 +1,4 @@
-package org.requests;
+package org.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;

@@ -7,6 +7,7 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.requests.payload.request.Answer;
 import org.requests.payload.request.TestApiRequest;
+import org.utils.JsonComparator;
 
 import java.util.ArrayList;
 import java.util.List;
