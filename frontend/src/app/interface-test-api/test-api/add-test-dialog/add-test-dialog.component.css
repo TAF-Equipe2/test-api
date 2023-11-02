@@ -2,7 +2,12 @@ mat-card {
   max-width: 600px;
   margin: 2em auto;
   text-align: center;
-  max-height: 600px;
+ max-height: 90vh;
+}
+mat-card-content.scrollable-content {
+  max-height: 80vh;
+  overflow-y: auto;
+
 }
 
 .header{

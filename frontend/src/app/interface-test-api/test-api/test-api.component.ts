@@ -4,6 +4,9 @@ import {testModel} from "../../models/test-model";
 import {MatDialog} from "@angular/material/dialog";
 import {AddTestDialogComponent} from "./add-test-dialog/add-test-dialog.component";
 import {DeleteTestDialogComponent} from "./delete-test-dialog/delete-test-dialog.component";
+import {first} from "rxjs";
+import {Posts} from "../../models/Posts";
+import {testModel2} from "../../models/testmodel2";
 
 const fakeData  = [
    { id: '01', methode : 'Get', URL : 'http://localhost:61714/test-api',TDR : '0.3',status: '200'},
@@ -17,8 +20,10 @@ const fakeData  = [
 })
 export class TestApiComponent implements OnInit {
   isPopupOpened =true;
+
   name: any;
-  displayedColumns: string[] = ['id', 'methode ', 'URL', 'TDR', 'status', 'action'];
+
+  displayedColumns: string[] = ['id', 'method', 'apiUrl', 'responseTime', 'statusCode', 'action'];
 
   form: any = {
     method: "get",
@@ -37,16 +42,12 @@ export class TestApiComponent implements OnInit {
     { id: "options", name: 'Options' },
     { id: "patch", name: 'Patch' },
   ];
-  dataTests : testModel [] = [];
+  dataTests : testModel2[]  = [];
   //dataTests = fakeData;
-
-
-
 
   answer ="";
   isResponse =false;
   statusCode :any;
-
 
   constructor(
     private testApiService: TestApiService,
@@ -54,31 +55,21 @@ export class TestApiComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getTestsList();
+    this.getTestList()
   }
 
-  getTestsList(): void{
-    //this.dataTests ;
 
-    this.dataTests = fakeData.map(item => new testModel(item.id, item.methode, item.URL, item.status));
+  getTestList (){
 
-
-    /*setTimeout(() => {
-      this.projectsService.getTestList()
-      .pipe(first())
-      .subscribe(projects => this.dataTests = tests);
+    setTimeout(() => {
+      this.dataTests= this.testApiService.getTestList();
+      console.log('Formatted JSON Data:', JSON.stringify(this.dataTests, null, 2));
     }, 300);
-    */
+
   }
 
-  deleteProject(id: string) {
-    this.isPopupOpened = true;
-    const dialogRef = this.dialog.open(DeleteTestDialogComponent, { data: id});
-    dialogRef.afterClosed().subscribe(result => {
-      this.isPopupOpened = false;
-      this.getTestsList();
-    });
-  }
+
+  /*
 
   onSubmit(): void {
     const { method, apiUrl, statusCode, input, expectedOutput } = this.form;
@@ -91,7 +82,7 @@ export class TestApiComponent implements OnInit {
       error: err => {
       }
     });
-  }
+  }*/
 
   addTest() {
     this.isPopupOpened = true;
@@ -99,7 +90,7 @@ export class TestApiComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       this.isPopupOpened = false;
-      this.getTestsList();
+      this.getTestList();
     });
 
   }
@@ -108,7 +99,7 @@ export class TestApiComponent implements OnInit {
     const dialogRef = this.dialog.open(DeleteTestDialogComponent, { data: id});
     dialogRef.afterClosed().subscribe(result => {
       this.isPopupOpened = false;
-      this.getTestsList();
+
     });
   }
 
@@ -139,4 +130,10 @@ export class TestApiComponent implements OnInit {
     }
   }
 
+  lunchTests() {
+    this.testApiService.executeTests(this.dataTests)
+      .pipe(first())
+      .subscribe(tests => this.dataTests= tests);
+
+  }
 }

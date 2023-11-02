@@ -25,3 +25,12 @@ table {
 .example-form-field {
   width: 200px;
 }
+.download-button {
+  margin-left : 8px;
+  color: black;
+}
+
+.custom-download-button:hover {
+
+  background-color: #333; /* Couleur légèrement plus sombre au survol */
+}
