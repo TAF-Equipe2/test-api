@@ -22,17 +22,6 @@ public class TestApiController {
 
     @PostMapping("/checkApi")
     public Serializable testApi(@Valid @RequestBody TestApiRequest testApiRequest) {
-
-        Map<String, String> requestHeaders = testApiRequest.getHeaders();
-
-        HttpHeaders headers = new HttpHeaders();
-
-        for (Map.Entry<String, String> entry : requestHeaders.entrySet()) {
-            headers.set(entry.getKey(), entry.getValue());
-        }
-
-        HttpEntity<?> entity = new HttpEntity<>(headers);
-
         return (redirectMethod(testApiRequest));
     }
 
