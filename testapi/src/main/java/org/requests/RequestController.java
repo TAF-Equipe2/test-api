@@ -7,6 +7,7 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.requests.payload.request.Answer;
 import org.requests.payload.request.TestApiRequest;
+import org.utils.JsonComparator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,10 +49,20 @@ public class RequestController {
         return this.request.getStatusCode() == this.response.getStatusCode();
     }
 
+    /**
+     * This method checks the output of a request against the expected output.
+     * <p>
+     * It uses an ObjectMapper to handle JSON serialization and deserialization.
+     *
+     * @return true if the expected output is empty, indicating that there is no output to compare against;
+     *         otherwise, it compares the expected output with the actual output and returns the result.
+     */
     private boolean checkOutput() {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode expectedOutput = this.request.getExpectedOutput();
-        ;
+        if (expectedOutput.isEmpty()){
+            return true;
+        }
         JsonNode output = null;
         try {
             output = mapper.readTree(this.response.getBody().asPrettyString());
@@ -59,6 +70,9 @@ public class RequestController {
             this.messages.add("Impossible to parse the output");
         }
 
+        // Generate a detailed report of the json comparison. It has the field structure of `expectedOutput`.
+        // A field  `true` significate that the field exist with the same value in `ouput` and `expectedOutput`
+        // A field  `false` significate that the field doesn't exist/have the same value in `output`
         this.fieldAnswer = JsonComparator.compareJson(expectedOutput, output, mapper.createObjectNode());
 
         return expectedOutput.equals(output);
