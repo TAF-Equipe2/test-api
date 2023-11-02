@@ -17,8 +17,8 @@ export class DeleteTestDialogComponent implements OnInit {
               @Inject(MAT_DIALOG_DATA) public id: any,) { }
 
   ngOnInit(): void {
-    this.testApiService.getTest(this.id)
-      .subscribe(testModel=>this.testModel=testModel)
+    /*this.testApiService.getTest(this.id)
+      .subscribe(testModel=>this.testModel=testModel)*/
   }
 
   onNoClick(): void {

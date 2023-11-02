@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
-import {filter, Observable, Subject, throwError} from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import {BehaviorSubject,  Observable, Subject, throwError} from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import {testModel} from "../models/test-model";
 import {testModel2} from "../models/testmodel2";
+import {forkJoin} from "rxjs";
 
-const AUTH_API = `${environment.apiUrl}/api/testapi/`;
+
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -21,59 +22,47 @@ export class TestApiService {
   REST_API: string = environment.apiUrl
   constructor(private http: HttpClient) { }
 
-  listTests : testModel2 []=[{
-    "id": 1,
-    "method": "POST",
-    "apiUrl": "api.stm.info/pub/od/i3/v2/messages/etatservice",
-    "responseTime": 0.1,
-    "expectedOutput": "{[}",
-    "statusCode": 200,
-    "headers": {},
-    "expectedHeaders": {}
-  }];
+  listTests : testModel2 []=[];
+  listTestsExecuted : any ;
 
-  executeTests(dataTests : testModel2 []): Observable<any> {
-    let API_URL = `${this.REST_API}/tests`; // a modifier selon le backend
-    return this.http.post(API_URL,dataTests)
-      .pipe(
-        catchError(this.handleError)
+  /* executeTests(dataTests : testModel2 []): Observable<any[]> {
+    const observables: Observable<any> []=  dataTests.map(test =>{
+      return this.http.post(`${this.REST_API}/tests/`,test)
+        .pipe(
+          catchError(this.handleError)
+        );
+    });
+    return forkJoin(observables).pipe(
+      map(responses => {
 
-      )
+        return responses;
+      })
+    );
+  } */
+
+  executeTests (dataTests : testModel2 [])  {
+    for (let i=0; i < dataTests.length; i++){
+
+      const test = dataTests[i];
+      const testExecuted  = this.http.post(`${this.REST_API}/tests/`,test);
+      this.listTestsExecuted.push(testExecuted);
+    }
+    return this.listTestsExecuted
+
   }
 
 
-  private userAddedSubject = new Subject<testModel2>();
 
-  getTestList() : testModel2 []  {
-    return this.listTests;
 
-    // return this.http.get<testModel[]>(`${this.REST_API}/users/${id}`)// endpoint a modifier selon le backen
-  }
+  private testsSubject: BehaviorSubject<testModel2[]> = new BehaviorSubject<testModel2[]>([]);
+  tests$ : Observable<testModel2[]> = this.testsSubject.asObservable();
+
   addTestOnList(newTest: testModel2){
     newTest.id= this.listTests.length+1;
     this.listTests.push(newTest);
-    this.userAddedSubject.next(newTest);
+    this.testsSubject.next([...this.listTests]);
     console.log("list test on service file"+JSON.stringify(this.listTests, null, 2));
 
-  }
-
-  testAdded$ = this.userAddedSubject.asObservable();
-
-  getTest(testModel: testModel): Observable<any> {
-    let API_URL = `${this.REST_API}/tests`; // a modifier selon le backend
-    return this.http.post(API_URL,testModel)
-      .pipe(
-        catchError(this.handleError)
-
-      )
-  }
-
-  addTest(testModel: testModel): Observable<any> {
-    let API_URL = `${this.REST_API}/tests`;  // a modifier selon le backend
-    return this.http.post(API_URL, testModel)
-      .pipe(
-        catchError(this.handleError)
-      )
   }
 
   deleteTest(id: any){

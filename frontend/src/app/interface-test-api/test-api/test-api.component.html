@@ -40,12 +40,12 @@
 
       <button mat-raised-button color="primary" (click)="lunchTests()">lancer les tests</button>
 
-      <button mat-icon-button class="download-button"(click)="exportCSV()">
+      <button mat-icon-button class="download-button" (click)="exportCSV()">
         <mat-icon>download</mat-icon>
       </button>
 
-      <button mat-icon-button color="primary" (click)="addTest()">
-        <mat-icon aria-label="Example icon-button with a heart icon">add</mat-icon>
+      <button mat-icon-button color="primary">
+        <mat-icon aria-label="Example icon-button with a heart icon" (click)="addTest()">add</mat-icon>
       </button>
 
     </mat-header-cell>

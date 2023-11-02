@@ -4,7 +4,7 @@ import {testModel} from "../../models/test-model";
 import {MatDialog} from "@angular/material/dialog";
 import {AddTestDialogComponent} from "./add-test-dialog/add-test-dialog.component";
 import {DeleteTestDialogComponent} from "./delete-test-dialog/delete-test-dialog.component";
-import {first} from "rxjs";
+import {first, of} from "rxjs";
 import {Posts} from "../../models/Posts";
 import {testModel2} from "../../models/testmodel2";
 
@@ -56,17 +56,16 @@ export class TestApiComponent implements OnInit {
 
   ngOnInit() {
     this.getTestList()
+//this.testApiService.tests$.subscribe((tests : testModel2 [])=>{this.dataTests=tests});
+    // Appelez la méthode pour initialiser la liste des tests
+
   }
 
 
-  getTestList (){
-
-    setTimeout(() => {
-      this.dataTests= this.testApiService.getTestList();
+  getTestList  () : void {
+    this.testApiService.tests$.subscribe((tests : testModel2 [])=>{this.dataTests=tests});
       console.log('Formatted JSON Data:', JSON.stringify(this.dataTests, null, 2));
-    }, 300);
-
-  }
+   }
 
 
   /*
@@ -90,7 +89,9 @@ export class TestApiComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       this.isPopupOpened = false;
-      this.getTestList();
+
+       this.ngOnInit()
+
     });
 
   }
@@ -133,7 +134,7 @@ export class TestApiComponent implements OnInit {
   lunchTests() {
     this.testApiService.executeTests(this.dataTests)
       .pipe(first())
-      .subscribe(tests => this.dataTests= tests);
+      .subscribe((listTestsExecuted: testModel2[]) => this.dataTests= listTestsExecuted);
 
   }
 }
