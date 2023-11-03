@@ -40,11 +40,16 @@ export class TestApiService {
   } */
 
   executeTests (dataTests : testModel2 [])  {
+
+    this.listTestsReponses = [];
+
     for (let i=0; i < dataTests.length; i++){
 
       const test = dataTests[i];
-      const testResponse = this.http.post(`${this.REST_API}/tests/`,test);
-      this.listTestsReponses.push(testResponse);
+      this.http.post(`${this.REST_API}/microservice/testapi/checkApi`,test).subscribe((response) => {
+        this.listTestsReponses.push(response)
+        console.log(response)
+      });
     }
     return this.listTestsReponses
 
