@@ -22,6 +22,8 @@ public class TestApiRequest {
 
     private Map<String, String> expectedHeaders;
 
+    private Map<String, String> headers;
+
     public Method getMethod() { return this.method; }
     public void setMethod(String method) { this.method = Method.valueOf(method.toUpperCase()); }
 
@@ -56,6 +58,14 @@ public class TestApiRequest {
 
     public void setExpectedHeaders(Map<String, String> expectedHeaders) {
         this.expectedHeaders = expectedHeaders;
+    }
+
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(Map<String, String> headers) {
+        this.headers = headers;
     }
 }
 

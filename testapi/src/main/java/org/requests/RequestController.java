@@ -27,6 +27,7 @@ public class RequestController {
         this.request = request;
         this.httpRequest = given()
                 .header("Content-Type", "application/json")
+                .headers(this.request.getHeaders())
                 .body(this.request.getInput());
     }
 
