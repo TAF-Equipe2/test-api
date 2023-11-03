@@ -93,6 +93,7 @@ export class AddTestDialogComponent implements OnInit {
       statusCode: this.statusCode,
       headers: {},
       expectedHeaders: {},
+      responseStatus: ''
     };
 
     this.headerRequest.forEach((pair) => {

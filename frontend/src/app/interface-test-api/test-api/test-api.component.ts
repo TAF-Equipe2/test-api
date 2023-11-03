@@ -4,9 +4,9 @@ import {testModel} from "../../models/test-model";
 import {MatDialog} from "@angular/material/dialog";
 import {AddTestDialogComponent} from "./add-test-dialog/add-test-dialog.component";
 import {DeleteTestDialogComponent} from "./delete-test-dialog/delete-test-dialog.component";
-import {first, of} from "rxjs";
-import {Posts} from "../../models/Posts";
+import {first} from "rxjs";
 import {testModel2} from "../../models/testmodel2";
+import {TestResponseModel} from "../../models/testResponseModel";
 
 const fakeData  = [
    { id: '01', methode : 'Get', URL : 'http://localhost:61714/test-api',TDR : '0.3',status: '200'},
@@ -21,33 +21,10 @@ const fakeData  = [
 export class TestApiComponent implements OnInit {
   isPopupOpened =true;
 
-  name: any;
-
-  displayedColumns: string[] = ['id', 'method', 'apiUrl', 'responseTime', 'statusCode', 'action'];
-
-  form: any = {
-    method: "get",
-    apiUrl: "",
-    input: "",
-    expectedOutput: "",
-    statusCode:200
-  };
-
-  methods: any [] = [
-    { id: "get", name: 'Get' },
-    { id: "head", name: 'Head' },
-    { id: "post", name: 'Post' },
-    { id: "put", name: 'Put' },
-    { id: "delete", name: 'Delete' },
-    { id: "options", name: 'Options' },
-    { id: "patch", name: 'Patch' },
-  ];
+  displayedColumns: string[] = ['id', 'method', 'apiUrl', 'responseTime', 'statusCode', 'responseStatus', 'action'];
   dataTests : testModel2[]  = [];
-  //dataTests = fakeData;
+  listTestsReponses : TestResponseModel[]=[];
 
-  answer ="";
-  isResponse =false;
-  statusCode :any;
 
   constructor(
     private testApiService: TestApiService,
@@ -57,7 +34,7 @@ export class TestApiComponent implements OnInit {
   ngOnInit() {
     this.getTestList()
 //this.testApiService.tests$.subscribe((tests : testModel2 [])=>{this.dataTests=tests});
-    // Appelez la méthode pour initialiser la liste des tests
+
 
   }
 
@@ -66,22 +43,6 @@ export class TestApiComponent implements OnInit {
     this.testApiService.tests$.subscribe((tests : testModel2 [])=>{this.dataTests=tests});
       console.log('Formatted JSON Data:', JSON.stringify(this.dataTests, null, 2));
    }
-
-
-  /*
-
-  onSubmit(): void {
-    const { method, apiUrl, statusCode, input, expectedOutput } = this.form;
-    this.testApiService.execute(method, apiUrl, statusCode, input, expectedOutput).subscribe({
-      next: data => {
-        this.isResponse = true;
-        this.answer = data.answer;
-        this.statusCode = JSON.stringify(data.statusCode);
-      },
-      error: err => {
-      }
-    });
-  }*/
 
   addTest() {
     this.isPopupOpened = true;
@@ -134,7 +95,24 @@ export class TestApiComponent implements OnInit {
   lunchTests() {
     this.testApiService.executeTests(this.dataTests)
       .pipe(first())
-      .subscribe((listTestsExecuted: testModel2[]) => this.dataTests= listTestsExecuted);
+      .subscribe((listTestsResponses: TestResponseModel[]) => this.listTestsReponses= listTestsResponses);
+    this.updateTestsStatusExecution(this.listTestsReponses);
+
+  }
+  updateTestsStatusExecution(listTestsReponses : TestResponseModel[]){
+    for  (let i=0; i < this.dataTests.length; i++){
+      listTestsReponses[i].id= i;
+      if (this.dataTests[i].id == listTestsReponses[i].id){
+        this.dataTests[i].responseStatus= listTestsReponses[i].answer;
+       // this.testApiService.listTests[i].responseStatus=listTestsReponses[i].answer;
+
+        setTimeout(() => {
+          this.ngOnInit();
+        }, 300);
+
+
+      }
+    }
 
   }
 }

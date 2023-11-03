@@ -5,8 +5,7 @@ import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import {testModel} from "../models/test-model";
 import {testModel2} from "../models/testmodel2";
-import {forkJoin} from "rxjs";
-
+import {TestResponseModel} from "../models/testResponseModel";
 
 
 const httpOptions = {
@@ -23,7 +22,7 @@ export class TestApiService {
   constructor(private http: HttpClient) { }
 
   listTests : testModel2 []=[];
-  listTestsExecuted : any ;
+  listTestsReponses: any;
 
   /* executeTests(dataTests : testModel2 []): Observable<any[]> {
     const observables: Observable<any> []=  dataTests.map(test =>{
@@ -44,15 +43,12 @@ export class TestApiService {
     for (let i=0; i < dataTests.length; i++){
 
       const test = dataTests[i];
-      const testExecuted  = this.http.post(`${this.REST_API}/tests/`,test);
-      this.listTestsExecuted.push(testExecuted);
+      const testResponse = this.http.post(`${this.REST_API}/tests/`,test);
+      this.listTestsReponses.push(testResponse);
     }
-    return this.listTestsExecuted
+    return this.listTestsReponses
 
   }
-
-
-
 
   private testsSubject: BehaviorSubject<testModel2[]> = new BehaviorSubject<testModel2[]>([]);
   tests$ : Observable<testModel2[]> = this.testsSubject.asObservable();

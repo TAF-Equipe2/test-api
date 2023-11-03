@@ -31,6 +31,14 @@
     <td mat-cell *matCellDef="let row"> {{row.responseTime}} </td>
   </ng-container>
 
+  <ng-container matColumnDef="responseStatus">
+    <th mat-header-cell *matHeaderCellDef> resultat du test </th>
+    <td mat-cell *matCellDef="let row"
+        [ngStyle]="{'color': row.responseStatus === 'true' ? 'green' : (row.responseStatus === 'false' ? 'red' : 'black') }">
+      {{ row.responseStatus }} </td>
+  </ng-container>
+
+
 
 
 
@@ -52,6 +60,7 @@
 
     <th mat-header-cell *matHeaderCellDef> actions </th>
     <td mat-cell *matCellDef="let row">
+
       <button mat-raised-button style="background-color: green; color: white;">succes</button>
 
       <button mat-icon-button (click)="deleteTest(row.id)">
