@@ -1,7 +1,7 @@
 # TEST-API
 
-TEST-API est un microservice permettant de tester des APIs avec [REST-assured](https://rest-assured.io/).
-Il est destiné à être utilisé avec TAF (Test Automation Framework).
+TEST-API is a microservice for testing APIs with [REST-assured](https://rest-assured.io/).
+It is intended for use with TAF (Test Automation Framework).
 
 - [Getting started](#getting-started)
 - [API Documentation](#api-documentation)
