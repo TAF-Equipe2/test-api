@@ -56,7 +56,7 @@ export class AddTestDialogComponent implements OnInit {
     if (!value) {
       return false;
     }
-    return value.trim().startsWith('{') && value.trim().endsWith('}');
+    return true;
   }
 
   // verfiier le format de apiurl avec regexp
@@ -79,21 +79,16 @@ export class AddTestDialogComponent implements OnInit {
       return;
     }
 
-    if (!this.isValidJsonFormat(this.expectedOutput)) {
-      console.error("le format de json n'est pas compatible.");
-      return;
-    }
-
     const jsonData: testModel2 = {
       id: 0,
       method: this.method,
       apiUrl: this.apiUrl,
       responseTime: this.responseTime,
-      expectedOutput: this.expectedOutput,
+      expectedOutput: "",
+      input:"",
       statusCode: this.statusCode,
       headers: {},
-      expectedHeaders: {},
-      responseStatus: ''
+      expectedHeaders: {}
     };
 
     this.headerRequest.forEach((pair) => {

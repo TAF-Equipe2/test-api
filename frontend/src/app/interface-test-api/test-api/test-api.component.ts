@@ -93,26 +93,17 @@ export class TestApiComponent implements OnInit {
   }
 
   lunchTests() {
-    this.testApiService.executeTests(this.dataTests)
-      .pipe(first())
-      .subscribe((listTestsResponses: TestResponseModel[]) => this.listTestsReponses= listTestsResponses);
-    this.updateTestsStatusExecution(this.listTestsReponses);
-
+    this.testApiService.executeTests(this.dataTests).subscribe((listTestsReponses: TestResponseModel[]) => {
+      this.updateTestsStatusExecution(listTestsReponses);
+    });
   }
-  updateTestsStatusExecution(listTestsReponses : TestResponseModel[]){
-    for  (let i=0; i < this.dataTests.length; i++){
-      listTestsReponses[i].id= i;
-      if (this.dataTests[i].id == listTestsReponses[i].id){
-        this.dataTests[i].responseStatus= listTestsReponses[i].answer;
-       // this.testApiService.listTests[i].responseStatus=listTestsReponses[i].answer;
 
-        setTimeout(() => {
-          this.ngOnInit();
-        }, 300);
-
-
-      }
-    }
-
+  updateTestsStatusExecution(listTestsReponses: TestResponseModel[]) {
+    console.log("========>", listTestsReponses);
+    this.dataTests.forEach((test, index) => {
+        this.dataTests[index] = { ...test, responseStatus: listTestsReponses[index].answer.toString() };
+    });
+    console.log("dataTests========>", this.dataTests);
+    this.getTestList();
   }
 }

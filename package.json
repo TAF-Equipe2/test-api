@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "@angular-devkit/build-angular": "^14.2.5"
+  },
+  "dependencies": {
+    "mvn": "^3.5.0"
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
-import {BehaviorSubject,  Observable, Subject, throwError} from 'rxjs';
+import {BehaviorSubject,  Observable, Subject, forkJoin, throwError} from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import {testModel} from "../models/test-model";
@@ -39,21 +39,14 @@ export class TestApiService {
     );
   } */
 
-  executeTests (dataTests : testModel2 [])  {
-
-    this.listTestsReponses = [];
-
-    for (let i=0; i < dataTests.length; i++){
-
-      const test = dataTests[i];
-      this.http.post(`${this.REST_API}/microservice/testapi/checkApi`,test).subscribe((response) => {
-        this.listTestsReponses.push(response)
-        console.log(response)
-      });
-    }
-    return this.listTestsReponses
-
+  executeTests(dataTests: testModel2[]): Observable<TestResponseModel[]> {
+    return forkJoin(
+      dataTests.map(test =>
+        this.http.post<TestResponseModel>(`${this.REST_API}/microservice/testapi/checkApi`, test)
+      )
+    );
   }
+
 
   private testsSubject: BehaviorSubject<testModel2[]> = new BehaviorSubject<testModel2[]>([]);
   tests$ : Observable<testModel2[]> = this.testsSubject.asObservable();
