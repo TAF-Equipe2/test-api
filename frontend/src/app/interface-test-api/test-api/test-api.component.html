@@ -34,7 +34,7 @@
   <ng-container matColumnDef="responseStatus">
     <th mat-header-cell *matHeaderCellDef> resultat du test </th>
     <td mat-cell *matCellDef="let row"
-        [ngStyle]="{'color': row.responseStatus === 'true' ? 'green' : (row.responseStatus === 'false' ? 'red' : 'black') }">
+        [ngStyle]="{'color': row.responseStatus === true ? 'green' : (row.responseStatus === false ? 'red' : 'black') }">
       {{ row.responseStatus }} </td>
   </ng-container>
 

@@ -21,7 +21,7 @@ export class TestApiService {
   REST_API: string = environment.apiUrl
   constructor(private http: HttpClient) { }
 
-  listTests : testModel2 []=[];
+
   listTestsReponses: any;
 
   /* executeTests(dataTests : testModel2 []): Observable<any[]> {
@@ -50,12 +50,11 @@ export class TestApiService {
 
   private testsSubject: BehaviorSubject<testModel2[]> = new BehaviorSubject<testModel2[]>([]);
   tests$ : Observable<testModel2[]> = this.testsSubject.asObservable();
-
+  listTests : testModel2 []=[];
   addTestOnList(newTest: testModel2){
     newTest.id= this.listTests.length+1;
     this.listTests.push(newTest);
     this.testsSubject.next([...this.listTests]);
-    console.log("list test on service file"+JSON.stringify(this.listTests, null, 2));
 
   }
 
@@ -80,5 +79,27 @@ export class TestApiService {
     }
     console.log(errorMessage);
     return throwError(errorMessage);
+  }
+
+  // Update the status of test executions using index
+  updateTestsStatusExecution(listTestsResponses: TestResponseModel[]) {
+    // Ensure the response list length is equal to the test list length
+    if (listTestsResponses.length !== this.listTests.length) {
+      console.error('The number of responses does not match the number of tests.');
+      return;
+    }
+
+    // Iterate over the responses and update the corresponding test by index
+    listTestsResponses.forEach((response, index) => {
+      // Directly using the index to update the status
+      if (this.listTests[index]) { // Check if the test exists at this index
+        this.listTests[index].responseStatus = response.answer;
+      } else {
+        console.error(`No test found at index ${index}`);
+      }
+    });
+
+    // Emit the updated test list
+    this.testsSubject.next([...this.listTests]);
   }
 }

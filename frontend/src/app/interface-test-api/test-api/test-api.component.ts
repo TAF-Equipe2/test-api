@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import { TestApiService } from 'src/app/_services/test-api.service';
 import {testModel} from "../../models/test-model";
 import {MatDialog} from "@angular/material/dialog";
@@ -7,6 +7,7 @@ import {DeleteTestDialogComponent} from "./delete-test-dialog/delete-test-dialog
 import {first} from "rxjs";
 import {testModel2} from "../../models/testmodel2";
 import {TestResponseModel} from "../../models/testResponseModel";
+import {MatTable} from "@angular/material/table";
 
 const fakeData  = [
    { id: '01', methode : 'Get', URL : 'http://localhost:61714/test-api',TDR : '0.3',status: '200'},
@@ -33,15 +34,11 @@ export class TestApiComponent implements OnInit {
 
   ngOnInit() {
     this.getTestList()
-//this.testApiService.tests$.subscribe((tests : testModel2 [])=>{this.dataTests=tests});
-
-
   }
 
 
   getTestList  () : void {
     this.testApiService.tests$.subscribe((tests : testModel2 [])=>{this.dataTests=tests});
-      console.log('Formatted JSON Data:', JSON.stringify(this.dataTests, null, 2));
    }
 
   addTest() {
@@ -100,10 +97,7 @@ export class TestApiComponent implements OnInit {
 
   updateTestsStatusExecution(listTestsReponses: TestResponseModel[]) {
     console.log("========>", listTestsReponses);
-    this.dataTests.forEach((test, index) => {
-        this.dataTests[index] = { ...test, responseStatus: listTestsReponses[index].answer.toString() };
-    });
-    console.log("dataTests========>", this.dataTests);
-    this.getTestList();
+    this.testApiService.updateTestsStatusExecution(listTestsReponses);
+    this.getTestList()
   }
 }

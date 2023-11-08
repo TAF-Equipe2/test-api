@@ -7,6 +7,6 @@ export interface testModel2 {
     input?: string;
     expectedOutput?: string;
     statusCode?: number;
-    responseStatus?: string;
+    responseStatus?: boolean;
     expectedHeaders:  { [key: string]: string };
   }
