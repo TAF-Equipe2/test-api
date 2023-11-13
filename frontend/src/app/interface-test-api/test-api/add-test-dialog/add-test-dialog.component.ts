@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {testModel} from "../../../models/test-model";
 import {TestApiService} from "../../../_services/test-api.service";
@@ -21,7 +21,6 @@ export class AddTestDialogComponent implements OnInit {
   expectedOutput: any;
 
   hide = true;
-  addTestForm: any;
   errorMessage: string |undefined;
   constructor(public dialogRef: MatDialogRef<AddTestDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: testModel,
@@ -31,8 +30,6 @@ export class AddTestDialogComponent implements OnInit {
               private testApiService : TestApiService,) { }
 
   ngOnInit(): void {}
-
-
 
 
   addnewHeader() {
@@ -48,8 +45,6 @@ export class AddTestDialogComponent implements OnInit {
   deleteExpectedHeader(index: number) {
     this.expectedHeaderRequest.splice(index, 1);
   }
-
-  // ... (reste du code)
 
   //function qui teste est ce que expectedoutput commence par { et termine avec }
   isValidJsonFormat(value: string): boolean {
@@ -73,6 +68,7 @@ export class AddTestDialogComponent implements OnInit {
     return !!pattern.test(apiUrl);
   }
 
+  // when user click on "save" this function is to save all tests informations with the right format
   saveForm() {
     if (!this.isValidApiUrl(this.apiUrl)) {
       console.error("L'URL fournie n'est pas valide.");

@@ -7,12 +7,6 @@ import {testModel} from "../models/test-model";
 import {testModel2} from "../models/testmodel2";
 import {TestResponseModel} from "../models/testResponseModel";
 
-
-const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-};
-
-
 @Injectable({
   providedIn: 'root'
 })
@@ -21,10 +15,7 @@ export class TestApiService {
   REST_API: string = environment.apiUrl
   constructor(private http: HttpClient) { }
 
-
-  listTestsReponses: any;
-
-  //executer la liste des tests un par un
+  //execute tests one by one
   executeTests(dataTests: testModel2[]): Observable<TestResponseModel[]> {
     return forkJoin(
       dataTests.map(test =>
@@ -33,10 +24,11 @@ export class TestApiService {
     );
   }
 
-//permet de mettre a jour automatiquement la liste des tests afficher
+//to refresh automatically the tests's  list
   private testsSubject: BehaviorSubject<testModel2[]> = new BehaviorSubject<testModel2[]>([]);
   tests$ : Observable<testModel2[]> = this.testsSubject.asObservable();
   listTests : testModel2 []=[];
+
   //ajouter un test a la liste
   addTestOnList(newTest: testModel2){
     newTest.id= this.listTests.length+1;
@@ -45,7 +37,7 @@ export class TestApiService {
 
   }
 
-//supprimer un tests de la liste
+// delete a test from the liste when user confirm the remove
   deleteTest(id: number){
     let indiceASupprimer = id-1;
     this.listTests.splice(indiceASupprimer, 1);
@@ -53,24 +45,10 @@ export class TestApiService {
 
   }
 
+  // get test information to show it to the user, so he can conform that he wants delete the right test on the list
   getTest(id: number) {
     const rowTest = this.listTests.find(row => row.id === id);
     return rowTest;
-  }
-
-
-
-  handleError(error: HttpErrorResponse) {
-    let errorMessage = '';
-    if (error.error instanceof ErrorEvent) {
-      // Handle client error
-      errorMessage = error.error.message;
-    } else {
-      // Handle server error
-      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
-    }
-    console.log(errorMessage);
-    return throwError(errorMessage);
   }
 
   // Update the status of test executions using index
@@ -94,4 +72,5 @@ export class TestApiService {
     // Emit the updated test list
     this.testsSubject.next([...this.listTests]);
   }
+
 }

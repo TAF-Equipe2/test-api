@@ -1,19 +1,13 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { TestApiService } from 'src/app/_services/test-api.service';
 import {testModel} from "../../models/test-model";
 import {MatDialog} from "@angular/material/dialog";
 import {AddTestDialogComponent} from "./add-test-dialog/add-test-dialog.component";
 import {DeleteTestDialogComponent} from "./delete-test-dialog/delete-test-dialog.component";
-import {first} from "rxjs";
 import {testModel2} from "../../models/testmodel2";
 import {TestResponseModel} from "../../models/testResponseModel";
-import {MatTable} from "@angular/material/table";
 
-const fakeData  = [
-   { id: '01', methode : 'Get', URL : 'http://localhost:61714/test-api',TDR : '0.3',status: '200'},
-  { id: '01', methode : 'Get', URL : 'http://localhost:61714/test-api',TDR : '0.1',status: '200'},
-  { id: '01', methode : 'Get', URL : 'http://localhost:61714/test-api',TDR : '0.01',status: '200'},
-]
+
 @Component({
   selector: 'app-test-api',
   templateUrl: './test-api.component.html',
@@ -21,11 +15,9 @@ const fakeData  = [
 })
 export class TestApiComponent implements OnInit {
   isPopupOpened =true;
-
+ // colomn's list
   displayedColumns: string[] = ['id', 'method', 'apiUrl', 'responseTime', 'statusCode', 'responseStatus', 'action'];
   dataTests : testModel2[]  = [];
-  listTestsReponses : TestResponseModel[]=[];
-
 
   constructor(
     private testApiService: TestApiService,
@@ -33,14 +25,16 @@ export class TestApiComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    //loade list of tests
     this.getTestList()
   }
 
-
+//get list of tests after evry test adde
   getTestList  () : void {
     this.testApiService.tests$.subscribe((tests : testModel2 [])=>{this.dataTests=tests});
    }
 
+   //oppen a dialog when user click on add icon
   addTest() {
     this.isPopupOpened = true;
     const dialogRef = this.dialog.open(AddTestDialogComponent, {});
@@ -48,11 +42,13 @@ export class TestApiComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       this.isPopupOpened = false;
 
-       this.ngOnInit()
+       this.ngOnInit() //refresh list of tests automaticly after to show the new test
 
     });
 
   }
+
+  //oppen a dialog when user click
   deleteTest(id: string) {
     this.isPopupOpened = true;
     console.log("list ===>0",id)
@@ -60,11 +56,12 @@ export class TestApiComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       this.isPopupOpened = false;
       this.ngOnInit()
-
     });
+
     this.getTestList()
   }
 
+  // download the test list with csv format after they was executed
   exportCSV(): void {
     if (this.dataTests.length === 0) {
       return;
@@ -92,15 +89,18 @@ export class TestApiComponent implements OnInit {
     }
   }
 
+  // lunch tests execution
   lunchTests() {
     this.testApiService.executeTests(this.dataTests).subscribe((listTestsReponses: TestResponseModel[]) => {
       this.updateTestsStatusExecution(listTestsReponses);
     });
   }
 
+ //updates list of tests after the test swas executed
   updateTestsStatusExecution(listTestsReponses: TestResponseModel[]) {
     console.log("========>", listTestsReponses);
     this.testApiService.updateTestsStatusExecution(listTestsReponses);
     this.getTestList()
   }
+
 }
