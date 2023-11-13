@@ -55,11 +55,14 @@ export class TestApiComponent implements OnInit {
   }
   deleteTest(id: string) {
     this.isPopupOpened = true;
+    console.log("list ===>0",id)
     const dialogRef = this.dialog.open(DeleteTestDialogComponent, { data: id});
     dialogRef.afterClosed().subscribe(result => {
       this.isPopupOpened = false;
+      this.ngOnInit()
 
     });
+    this.getTestList()
   }
 
   exportCSV(): void {

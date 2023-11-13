@@ -9,6 +9,10 @@ mat-card-content.scrollable-content {
   overflow-y: auto;
 
 }
+.example-min-width{
+  padding: 10px;
+}
+
 
 .header{
   text-align: center;

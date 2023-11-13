@@ -24,21 +24,7 @@ export class TestApiService {
 
   listTestsReponses: any;
 
-  /* executeTests(dataTests : testModel2 []): Observable<any[]> {
-    const observables: Observable<any> []=  dataTests.map(test =>{
-      return this.http.post(`${this.REST_API}/tests/`,test)
-        .pipe(
-          catchError(this.handleError)
-        );
-    });
-    return forkJoin(observables).pipe(
-      map(responses => {
-
-        return responses;
-      })
-    );
-  } */
-
+  //executer la liste des tests un par un
   executeTests(dataTests: testModel2[]): Observable<TestResponseModel[]> {
     return forkJoin(
       dataTests.map(test =>
@@ -47,10 +33,11 @@ export class TestApiService {
     );
   }
 
-
+//permet de mettre a jour automatiquement la liste des tests afficher
   private testsSubject: BehaviorSubject<testModel2[]> = new BehaviorSubject<testModel2[]>([]);
   tests$ : Observable<testModel2[]> = this.testsSubject.asObservable();
   listTests : testModel2 []=[];
+  //ajouter un test a la liste
   addTestOnList(newTest: testModel2){
     newTest.id= this.listTests.length+1;
     this.listTests.push(newTest);
@@ -58,12 +45,17 @@ export class TestApiService {
 
   }
 
-  deleteTest(id: any){
-    const url = `${this.REST_API}/test/${id}`; //  a modifier selon el backend
-    return this.http.delete<testModel>(url).pipe(
-      catchError(this.handleError)
-    )
+//supprimer un tests de la liste
+  deleteTest(id: number){
+    let indiceASupprimer = id-1;
+    this.listTests.splice(indiceASupprimer, 1);
+    this.testsSubject.next([...this.listTests]);
 
+  }
+
+  getTest(id: number) {
+    const rowTest = this.listTests.find(row => row.id === id);
+    return rowTest;
   }
 
 
