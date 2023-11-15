@@ -1,9 +1,10 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {testModel} from "../../../models/test-model";
 import {TestApiService} from "../../../_services/test-api.service";
 import {testModel2}  from "../../../models/testmodel2";
+
 
 @Component({
   selector: 'app-add-test-dialog',
@@ -12,6 +13,7 @@ import {testModel2}  from "../../../models/testmodel2";
 })
 export class AddTestDialogComponent implements OnInit {
   headerRequest = [{ key: '', value: '' }];
+  expectedHeaderRequest = [{ key: '', value: '' }];
   method: any;
   apiUrl: any;
   responseTime: any;
@@ -19,41 +21,16 @@ export class AddTestDialogComponent implements OnInit {
   expectedOutput: any;
 
   hide = true;
-  addTestForm: any;
   errorMessage: string |undefined;
   constructor(public dialogRef: MatDialogRef<AddTestDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: testModel,
 
+
               private formBuilder : FormBuilder,
               private testApiService : TestApiService,) { }
 
-  ngOnInit(): void {
-    this.addTestForm= this.formBuilder.group({
-      name : this.formBuilder.control("",[ Validators.required, Validators.minLength(5)]),
-      description : this.formBuilder.control("",[ Validators.required, Validators.minLength(5)]),
-      created : this.formBuilder.control("",[ Validators.required]),
+  ngOnInit(): void {}
 
-
-    });
-  }
-
-  saveAdd() {
-    this.testApiService.addTest(this.addTestForm.value).subscribe(() => {
-      console.log( this.addTestForm.value)
-      /*this.notificationService.success('projet ajouter avec succes !');*/
-
-    }, (err) => {
-      this.errorMessage=err;
-     /* this.notificationService.warn('echec dajouter veuillez réesseyer !');*/
-      console.log(this.addTestForm.value);
-
-    });
-
-  }
-
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
 
   addnewHeader() {
     this.headerRequest.push({ key: '', value: '' });
@@ -62,14 +39,19 @@ export class AddTestDialogComponent implements OnInit {
     this.headerRequest.splice(index, 1);
   }
 
-  // ... (reste du code)
+  addnewExpectedHeader() {
+    this.expectedHeaderRequest.push({ key: '', value: '' });
+  }
+  deleteExpectedHeader(index: number) {
+    this.expectedHeaderRequest.splice(index, 1);
+  }
 
   //function qui teste est ce que expectedoutput commence par { et termine avec }
   isValidJsonFormat(value: string): boolean {
     if (!value) {
       return false;
     }
-    return value.trim().startsWith('{') && value.trim().endsWith('}');
+    return true;
   }
 
   // verfiier le format de apiurl avec regexp
@@ -86,32 +68,43 @@ export class AddTestDialogComponent implements OnInit {
     return !!pattern.test(apiUrl);
   }
 
-  saveHeaders() {
+  // when user click on "save" this function is to save all tests informations with the right format
+  saveForm() {
     if (!this.isValidApiUrl(this.apiUrl)) {
       console.error("L'URL fournie n'est pas valide.");
       return;
     }
 
-    if (!this.isValidJsonFormat(this.expectedOutput)) {
-      console.error("le format de json n'est pas compatible.");
-      return;
-    }
-
     const jsonData: testModel2 = {
+      id: 0,
       method: this.method,
       apiUrl: this.apiUrl,
       responseTime: this.responseTime,
-      expectedOutput: this.expectedOutput,
+      expectedOutput: "",
+      input:"",
       statusCode: this.statusCode,
       headers: {},
-      expectedHeaders: this.expectedOutput,
+      expectedHeaders: {}
     };
 
     this.headerRequest.forEach((pair) => {
       jsonData.headers[pair.key] = pair.value;
     });
 
+    this.expectedHeaderRequest.forEach((pair) => {
+      jsonData.expectedHeaders[pair.key] = pair.value;
+    });
+
+    this.testApiService.addTestOnList(jsonData);
     console.log('Formatted JSON Data:', JSON.stringify(jsonData, null, 2));
+
+    this.dialogRef.close();
+  }
+
+  closeDialog(): void {
+    this.dialogRef.close();
+
+
   }
 
 

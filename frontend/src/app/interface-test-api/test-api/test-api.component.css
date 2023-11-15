@@ -25,3 +25,9 @@ table {
 .example-form-field {
   width: 200px;
 }
+.download-button {
+  margin-left : 8px;
+  color: black;
+}
+
+

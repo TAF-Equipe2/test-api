@@ -1,58 +1,63 @@
-<h1 style="text-align: center;"> liste des tests</h1>
+<h1 style="text-align: center;"> Liste des tests</h1>
 
 
 <table mat-table [dataSource]="dataTests" class="mat-elevation-z8">
 
-  <!-- Position Column -->
+
   <ng-container matColumnDef="id">
     <th mat-header-cell *matHeaderCellDef> id </th>
     <td mat-cell *matCellDef="let row"> {{row.id}} </td>
   </ng-container>
 
-  <!-- Name Column -->
-  <ng-container matColumnDef="methode ">
+  <ng-container matColumnDef="method">
     <th mat-header-cell *matHeaderCellDef> methode </th>
-    <td mat-cell *matCellDef="let row"> {{row.methode}} </td>
+    <td mat-cell *matCellDef="let row"> {{row.method}} </td>
   </ng-container>
 
-  <!-- Weight Column -->
-  <ng-container matColumnDef="URL">
+  <ng-container matColumnDef="apiUrl">
     <th mat-header-cell *matHeaderCellDef> URL </th>
-    <td mat-cell *matCellDef="let row"> {{row.URL}} </td>
+    <td mat-cell *matCellDef="let row"> {{row.apiUrl}} </td>
   </ng-container>
 
-  <ng-container matColumnDef="status">
+  <ng-container matColumnDef="statusCode">
     <th mat-header-cell *matHeaderCellDef> status </th>
-    <td mat-cell *matCellDef="let row"> {{row.status}} </td>
+    <td mat-cell *matCellDef="let row"> {{row.statusCode}} </td>
   </ng-container>
 
-  <ng-container matColumnDef="TDR">
-    <th mat-header-cell *matHeaderCellDef> temps de reponse </th>
-    <td mat-cell *matCellDef="let row"> {{row.TDR}} </td>
+  <ng-container matColumnDef="responseTime">
+    <th mat-header-cell *matHeaderCellDef> TDR </th>
+    <td mat-cell *matCellDef="let row"> {{row.responseTime}} </td>
   </ng-container>
 
-
-
+  <ng-container matColumnDef="responseStatus">
+    <th mat-header-cell *matHeaderCellDef> resultat du test </th>
+    <td mat-cell *matCellDef="let row"
+        [ngStyle]="{'color': row.responseStatus === true ? 'green' : (row.responseStatus === false ? 'red' : 'black') }">
+      {{ row.responseStatus }} </td>
+  </ng-container>
 
 
   <ng-container matColumnDef="action">
-    <mat-header-cell *matHeaderCellDef class="button-container">
-      <button mat-icon-button color="primary" (click)="addTest()">
-        <mat-icon aria-label="Example icon-button with a heart icon">add</mat-icon>
+    <mat-header-cell *matHeaderCellDef >
+
+      <button mat-raised-button color="primary" (click)="lunchTests()">lancer les tests</button>
+
+      <button mat-icon-button class="download-button" (click)="exportCSV()">
+        <mat-icon>download</mat-icon>
       </button>
-      <button mat-icon-button color="warn" (click)="exportCSV()" title="Télécharger les tests" class="download-button">
-        <mat-icon aria-label="Download icon">get_app</mat-icon>
+
+      <button mat-icon-button color="primary">
+        <mat-icon aria-label="Example icon-button with a heart icon" (click)="addTest()">add</mat-icon>
       </button>
+
     </mat-header-cell>
 
     <th mat-header-cell *matHeaderCellDef> actions </th>
     <td mat-cell *matCellDef="let row">
-      <button mat-raised-button style="background-color: green; color: white;">succes</button>
-
-
       <button mat-icon-button (click)="deleteTest(row.id)">
         <mat-icon aria-label="Delete" color="warn">delete</mat-icon>
-      </button> </td>
+      </button>
+    </td>
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

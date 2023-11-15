@@ -1,9 +1,10 @@
 export class testModel {
 
   constructor(public id: string,
-              public methodeType: string,
+              public methode: string,
               public URL: string,
-              public statut: string,
+              public TDR: string,
+              public status: string,
 
 
   ){}

@@ -1,15 +1,11 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
-import { Observable, throwError} from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import {BehaviorSubject,  Observable, Subject, forkJoin, throwError} from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import {testModel} from "../models/test-model";
-
-const AUTH_API = `${environment.apiUrl}/microservice/testapi/`;
-
-const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-};
+import {testModel2} from "../models/testmodel2";
+import {TestResponseModel} from "../models/testResponseModel";
 
 @Injectable({
   providedIn: 'root'
@@ -19,56 +15,62 @@ export class TestApiService {
   REST_API: string = environment.apiUrl
   constructor(private http: HttpClient) { }
 
-  execute(method:string, apiUrl:string, statusCode:number, input:string, expectedOutput:string): Observable<any> {
-    return this.http.post(AUTH_API + 'checkApi', {
-         method: method,
-         apiUrl: apiUrl,
-         statusCode: statusCode,
-         expectedOutput: expectedOutput,
-         input: input,
-    }, httpOptions);
-  }
-  getTestList() {
-    const id =localStorage.getItem('idUser');// a modifier selon le backend
-
-    return this.http.get<testModel[]>(`${this.REST_API}/users/${id}`)// endpoint a modifier selon le backen
-  }
-
-  getTest(testModel: testModel): Observable<any> {
-    let API_URL = `${this.REST_API}/tests`; // a modifier selon le backend
-    return this.http.post(API_URL,testModel)
-      .pipe(
-        catchError(this.handleError)
-
+  //execute tests one by one
+  executeTests(dataTests: testModel2[]): Observable<TestResponseModel[]> {
+    return forkJoin(
+      dataTests.map(test =>
+        this.http.post<TestResponseModel>(`${this.REST_API}/microservice/testapi/checkApi`, test)
       )
+    );
   }
 
-  addTest(testModel: testModel): Observable<any> {
-    let API_URL = `${this.REST_API}/tests`;  // a modifier selon le backend
-    return this.http.post(API_URL, testModel)
-      .pipe(
-        catchError(this.handleError)
-      )
-  }
+//to refresh automatically the tests's  list
+  private testsSubject: BehaviorSubject<testModel2[]> = new BehaviorSubject<testModel2[]>([]);
+  tests$ : Observable<testModel2[]> = this.testsSubject.asObservable();
+  listTests : testModel2 []=[];
 
-  deleteTest(id: any){
-    const url = `${this.REST_API}/test/${id}`; //  a modifier selon el backend
-    return this.http.delete<testModel>(url).pipe(
-      catchError(this.handleError)
-    )
+  //ajouter un test a la liste
+  addTestOnList(newTest: testModel2){
+    newTest.id= this.listTests.length+1;
+    this.listTests.push(newTest);
+    this.testsSubject.next([...this.listTests]);
 
   }
 
-  handleError(error: HttpErrorResponse) {
-    let errorMessage = '';
-    if (error.error instanceof ErrorEvent) {
-      // Handle client error
-      errorMessage = error.error.message;
-    } else {
-      // Handle server error
-      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+// delete a test from the liste when user confirm the remove
+  deleteTest(id: number){
+    let indiceASupprimer = id-1;
+    this.listTests.splice(indiceASupprimer, 1);
+    this.testsSubject.next([...this.listTests]);
+
+  }
+
+  // get test information to show it to the user, so he can conform that he wants delete the right test on the list
+  getTest(id: number) {
+    const rowTest = this.listTests.find(row => row.id === id);
+    return rowTest;
+  }
+
+  // Update the status of test executions using index
+  updateTestsStatusExecution(listTestsResponses: TestResponseModel[]) {
+    // Ensure the response list length is equal to the test list length
+    if (listTestsResponses.length !== this.listTests.length) {
+      console.error('The number of responses does not match the number of tests.');
+      return;
     }
-    console.log(errorMessage);
-    return throwError(errorMessage);
+
+    // Iterate over the responses and update the corresponding test by index
+    listTestsResponses.forEach((response, index) => {
+      // Directly using the index to update the status
+      if (this.listTests[index]) { // Check if the test exists at this index
+        this.listTests[index].responseStatus = response.answer;
+      } else {
+        console.error(`No test found at index ${index}`);
+      }
+    });
+
+    // Emit the updated test list
+    this.testsSubject.next([...this.listTests]);
   }
+
 }
